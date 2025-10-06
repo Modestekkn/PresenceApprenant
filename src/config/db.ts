@@ -76,6 +76,14 @@ export interface Rapport {
   created_at?: Date;
 }
 
+// Table de liaison pour assigner les apprenants aux sessions
+export interface SessionApprenant {
+  id_session_apprenant?: number;
+  id_session: number;
+  id_apprenant: number;
+  created_at?: Date;
+}
+
 // Configuration de la base de données Dexie
 export class AttendanceDatabase extends Dexie {
   superadmins!: Table<Superadmin>;
@@ -83,6 +91,7 @@ export class AttendanceDatabase extends Dexie {
   apprenants!: Table<Apprenant>;
   formations!: Table<Formation>;
   sessions!: Table<Session>;
+  session_apprenants!: Table<SessionApprenant>;
   presences!: Table<Presence>;
   presences_formateur!: Table<PresenceFormateur>;
   rapports!: Table<Rapport>;
@@ -96,6 +105,7 @@ export class AttendanceDatabase extends Dexie {
       apprenants: '++id_apprenant, nom, prenom',
       formations: '++id_formation, nom_formation, id_formateur',
       sessions: '++id_session, date_session, id_formation, id_formateur, statut',
+      session_apprenants: '++id_session_apprenant, id_session, id_apprenant',
       presences: '++id_presence, id_session, id_apprenant',
       presences_formateur: '++id_presence_formateur, id_session, id_formateur',
       rapports: '++id_rapport, id_session, id_formateur, date_soumission'
@@ -119,6 +129,10 @@ export class AttendanceDatabase extends Dexie {
     });
 
     this.sessions.hook('creating', function (_primKey, obj) {
+      obj.created_at = new Date();
+    });
+
+    this.session_apprenants.hook('creating', function (_primKey, obj) {
       obj.created_at = new Date();
     });
 

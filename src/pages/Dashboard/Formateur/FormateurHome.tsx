@@ -1,7 +1,103 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle, Calendar, FileText } from 'lucide-react';
+import { useAuth } from '../../../hooks/useAuth';
+import { sessionStorage, rapportStorage, sessionApprenantStorage } from '../../../utils/storageUtils';
+import type { Session } from '../../../config/db';
+import { Loader } from '../../../components/UI/Loader';
+import { APP_CONSTANTS } from '../../../config/constants';
 
 export const FormateurHome: React.FC = () => {
+  const { user } = useAuth();
+  const [todaySessions, setTodaySessions] = useState<(Session & { apprenantCount: number })[]>([]);
+  const [stats, setStats] = useState({
+    sessionsCeMois: 0,
+    rapportssoumis: 0,
+    tauxPresenceMoyen: 0
+  });
+  const [isPresenceTimeActive, setIsPresenceTimeActive] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadFormateurData = async () => {
+      if (!user) return;
+
+      setIsLoading(true);
+      try {
+        // Sessions d'aujourd'hui avec compteur d'apprenants
+        const today = new Date().toISOString().split('T')[0];
+        const sessionsToday = await sessionStorage.getByFormateur(user.id);
+        const todaySessionsFiltered = sessionsToday.filter(
+          session => session.date_session === today
+        );
+
+        // Enrichir chaque session avec le nombre d'apprenants assignés
+        const sessionsWithApprenants = await Promise.all(
+          todaySessionsFiltered.map(async (session) => {
+            const apprenants = await sessionApprenantStorage.getApprenantsBySession(session.id_session!);
+            return {
+              ...session,
+              apprenantCount: apprenants.length
+            };
+          })
+        );
+        setTodaySessions(sessionsWithApprenants);
+
+        // Statistiques du mois
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        const allSessions = await sessionStorage.getByFormateur(user.id);
+        const sessionsCeMois = allSessions.filter(session => {
+          const sessionDate = new Date(session.date_session);
+          return sessionDate.getMonth() === currentMonth && 
+                 sessionDate.getFullYear() === currentYear;
+        });
+
+        // Rapports soumis
+        const rapports = await rapportStorage.getByFormateur(user.id);
+        const rapportsCeMois = rapports.filter(rapport => {
+          const rapportDate = new Date(rapport.date_soumission);
+          return rapportDate.getMonth() === currentMonth && 
+                 rapportDate.getFullYear() === currentYear;
+        });
+
+        setStats({
+          sessionsCeMois: sessionsCeMois.length,
+          rapportssoumis: rapportsCeMois.length,
+          tauxPresenceMoyen: 92 // TODO: Calculer le vrai taux
+        });
+
+      } catch (error) {
+        console.error('Erreur lors du chargement des données formateur:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadFormateurData();
+  }, [user]);
+
+  // Vérifier si c'est l'heure de prise de présence
+  useEffect(() => {
+    const checkPresenceTime = () => {
+      const now = new Date();
+      const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+      
+      const isActive = currentTime >= APP_CONSTANTS.PRESENCE_TIME_LIMITS.START_TIME && 
+                      currentTime <= APP_CONSTANTS.PRESENCE_TIME_LIMITS.END_TIME;
+      
+      setIsPresenceTimeActive(isActive);
+    };
+
+    checkPresenceTime();
+    const interval = setInterval(checkPresenceTime, 60000); // Vérifier chaque minute
+
+    return () => clearInterval(interval);
+  }, []);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <div className="space-y-6">
       {/* En-tête */}
@@ -11,15 +107,27 @@ export const FormateurHome: React.FC = () => {
       </div>
 
       {/* Alerte pour la prise de présence */}
-      <div className="bg-warning-50 border border-warning-200 rounded-lg p-4">
-        <div className="flex items-center">
-          <Clock className="w-5 h-5 text-warning-600 mr-2" />
-          <div>
-            <p className="text-warning-800 font-medium">Période de prise de présence active</p>
-            <p className="text-warning-700 text-sm">Vous pouvez marquer les présences entre 07:30 et 08:00</p>
+      {isPresenceTimeActive ? (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+            <div>
+              <p className="text-green-800 font-medium">Période de prise de présence active</p>
+              <p className="text-green-700 text-sm">Vous pouvez marquer les présences entre {APP_CONSTANTS.PRESENCE_TIME_LIMITS.START_TIME} et {APP_CONSTANTS.PRESENCE_TIME_LIMITS.END_TIME}</p>
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <Clock className="w-5 h-5 text-orange-600 mr-2" />
+            <div>
+              <p className="text-orange-800 font-medium">Hors période de prise de présence</p>
+              <p className="text-orange-700 text-sm">La prise de présence est disponible entre {APP_CONSTANTS.PRESENCE_TIME_LIMITS.START_TIME} et {APP_CONSTANTS.PRESENCE_TIME_LIMITS.END_TIME}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Actions rapides */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -46,20 +154,20 @@ export const FormateurHome: React.FC = () => {
           Mes sessions d'aujourd'hui
         </h2>
         <div className="space-y-3">
-          <SessionCard
-            formation="Développement Web Frontend"
-            horaire="09:00 - 17:00"
-            apprenants={15}
-            status="en cours"
-            presenceMarked={true}
-          />
-          <SessionCard
-            formation="React Avancé"
-            horaire="14:00 - 18:00"
-            apprenants={8}
-            status="planifiée"
-            presenceMarked={false}
-          />
+          {todaySessions.length > 0 ? (
+            todaySessions.map((session) => (
+              <SessionCard
+                key={session.id_session}
+                formation={`Formation ${session.id_formation}`}
+                horaire={`${session.heure_debut} - ${session.heure_fin}`}
+                apprenants={session.apprenantCount}
+                status={session.statut}
+                presenceMarked={false} // TODO: Vérifier si la présence est marquée
+              />
+            ))
+          ) : (
+            <p className="text-gray-500 text-center py-8">Aucune session programmée aujourd'hui</p>
+          )}
         </div>
       </div>
 
@@ -67,17 +175,17 @@ export const FormateurHome: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatCard
           title="Sessions ce mois"
-          value="12"
+          value={stats.sessionsCeMois.toString()}
           color="primary"
         />
         <StatCard
           title="Rapports soumis"
-          value="8"
+          value={stats.rapportssoumis.toString()}
           color="success"
         />
         <StatCard
           title="Taux de présence moyen"
-          value="92%"
+          value={`${stats.tauxPresenceMoyen}%`}
           color="warning"
         />
       </div>

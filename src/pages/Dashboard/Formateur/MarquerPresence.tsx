@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, Users, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 import { usePresence } from '../../../hooks/usePresence';
-import { sessionStorage, apprenantStorage } from '../../../utils/storageUtils';
+import { sessionStorage, sessionApprenantStorage } from '../../../utils/storageUtils';
 import type { Session, Apprenant } from '../../../config/db';
 import { Button } from '../../../components/UI/Button';
 import { Loader } from '../../../components/UI/Loader';
@@ -59,16 +59,15 @@ export const MarquerPresence: React.FC = () => {
     loadTodaySessions();
   }, [user]);
 
-  // Charger les apprenants de la formation
+  // Charger les apprenants assignés à la session
   useEffect(() => {
     const loadApprenants = async () => {
       if (!selectedSession) return;
 
       try {
-        // Pour cette démo, on charge tous les apprenants
-        // En réalité, il faudrait une relation session-apprenants
-        const allApprenants = await apprenantStorage.getAll();
-        setApprenants(allApprenants);
+        // Utiliser la nouvelle relation session-apprenants
+        const assignedApprenants = await sessionApprenantStorage.getApprenantsBySession(selectedSession.id_session!);
+        setApprenants(assignedApprenants);
       } catch (error) {
         console.error('Erreur lors du chargement des apprenants:', error);
       }

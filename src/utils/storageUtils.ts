@@ -1,5 +1,5 @@
 import { db } from '../config/db';
-import type { Superadmin, Formateur, Apprenant, Formation, Session, Presence, PresenceFormateur, Rapport } from '../config/db';
+import type { Superadmin, Formateur, Apprenant, Formation, Session, SessionApprenant, Presence, PresenceFormateur, Rapport } from '../config/db';
 
 /**
  * Utilitaires pour la gestion du stockage IndexedDB
@@ -168,8 +168,20 @@ export const sessionStorage = {
     return await db.sessions.where('date_session').equals(date).toArray();
   },
 
-  async getByStatus(statut: string): Promise<Session[]> {
-    return await db.sessions.where('statut').equals(statut).toArray();
+  async getByMonth(year: number, month: number): Promise<Session[]> {
+    // Filtrer les sessions par mois/année
+    const sessions = await db.sessions.toArray();
+    return sessions.filter(session => {
+      const sessionDate = new Date(session.date_session);
+      return sessionDate.getFullYear() === year && sessionDate.getMonth() === month;
+    });
+  },
+
+  async getByDateRange(startDate: string, endDate: string): Promise<Session[]> {
+    const sessions = await db.sessions.toArray();
+    return sessions.filter(session => {
+      return session.date_session >= startDate && session.date_session <= endDate;
+    });
   },
 
   async update(id: number, data: Partial<Session>): Promise<number> {
@@ -180,25 +192,107 @@ export const sessionStorage = {
     await db.sessions.delete(id);
   },
 
-  async getSessionsWithDetails(formateurId?: number) {
+  async getSessionsWithDetails(formateurId?: number): Promise<(Session & { formateurNom?: string; formationNom?: string })[]> {
     const sessions = formateurId 
       ? await db.sessions.where('id_formateur').equals(formateurId).toArray()
       : await db.sessions.toArray();
+
+    return await Promise.all(
+      sessions.map(async (session) => {
+        const formateur = await db.formateurs.get(session.id_formateur);
+        const formation = await db.formations.get(session.id_formation);
+        return {
+          ...session,
+          formateurNom: formateur ? `${formateur.prenom} ${formateur.nom}` : undefined,
+          formationNom: formation?.nom_formation
+        };
+      })
+    );
+  }
+};
+
+// === SESSION-APPRENANTS (Liaison) ===
+export const sessionApprenantStorage = {
+  async assignApprenant(idSession: number, idApprenant: number): Promise<number> {
+    // Vérifier si l'assignation existe déjà
+    const existing = await db.session_apprenants
+      .where(['id_session', 'id_apprenant'])
+      .equals([idSession, idApprenant])
+      .first();
     
-    const sessionsWithDetails = [];
-    
-    for (const session of sessions) {
-      const formation = await db.formations.get(session.id_formation);
-      const formateur = await db.formateurs.get(session.id_formateur);
-      
-      sessionsWithDetails.push({
-        ...session,
-        formation: formation?.nom_formation || 'Formation inconnue',
-        formateur: formateur ? `${formateur.prenom} ${formateur.nom}` : 'Formateur inconnu'
-      });
+    if (existing) {
+      throw new Error('Apprenant déjà assigné à cette session');
     }
+
+    return await db.session_apprenants.add({
+      id_session: idSession,
+      id_apprenant: idApprenant
+    });
+  },
+
+  async assignMultipleApprenants(idSession: number, idsApprenants: number[]): Promise<number[]> {
+    const assignments = idsApprenants.map(idApprenant => ({
+      id_session: idSession,
+      id_apprenant: idApprenant
+    }));
+
+    return await db.session_apprenants.bulkAdd(assignments, { allKeys: true });
+  },
+
+  async removeApprenant(idSession: number, idApprenant: number): Promise<void> {
+    await db.session_apprenants
+      .where(['id_session', 'id_apprenant'])
+      .equals([idSession, idApprenant])
+      .delete();
+  },
+
+  async getApprenantsBySession(idSession: number): Promise<Apprenant[]> {
+    const assignments = await db.session_apprenants
+      .where('id_session')
+      .equals(idSession)
+      .toArray();
     
-    return sessionsWithDetails;
+    const apprenantIds = assignments.map(a => a.id_apprenant);
+    return await db.apprenants.where('id_apprenant').anyOf(apprenantIds).toArray();
+  },
+
+  async getSessionsByApprenant(idApprenant: number): Promise<Session[]> {
+    const assignments = await db.session_apprenants
+      .where('id_apprenant')
+      .equals(idApprenant)
+      .toArray();
+    
+    const sessionIds = assignments.map(a => a.id_session);
+    return await db.sessions.where('id_session').anyOf(sessionIds).toArray();
+  },
+
+  async getAllAssignments(): Promise<SessionApprenant[]> {
+    return await db.session_apprenants.toArray();
+  },
+
+  async removeAllApprenantsFromSession(idSession: number): Promise<void> {
+    await db.session_apprenants.where('id_session').equals(idSession).delete();
+  },
+
+  async getSessionsWithApprenants(): Promise<Array<{
+    session: Session;
+    apprenants: Apprenant[];
+    formateur?: Formateur;
+  }>> {
+    const sessions = await db.sessions.toArray();
+    
+    return await Promise.all(
+      sessions.map(async (session) => {
+        const apprenants = await this.getApprenantsBySession(session.id_session!);
+        const formateur = await db.formateurs.get(session.id_formateur);
+        
+        return {
+          session,
+          apprenants,
+          formateur
+        };
+      })
+    );
   }
 };
 

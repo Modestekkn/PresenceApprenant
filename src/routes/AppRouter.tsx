@@ -4,7 +4,7 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { PrivateRoute } from './PrivateRoute';
 import { Login } from '../pages/Login';
 
-// Import des dashboards (à créer)
+// Import des dashboards
 import { DashboardSuperadmin } from '../pages/Dashboard/Superadmin/DashboardSuperadmin';
 import { DashboardFormateur } from '../pages/Dashboard/Formateur/DashboardFormateur';
 
@@ -57,7 +57,6 @@ export const AppRouter: React.FC = () => {
   );
 };
 
-// Composant pour rediriger vers le bon dashboard selon le rôle
 const DashboardRedirect: React.FC = () => {
   const user = JSON.parse(localStorage.getItem('attendance_user_data') || '{}');
   
@@ -67,5 +66,6 @@ const DashboardRedirect: React.FC = () => {
     return <Navigate to="/dashboard/formateur" replace />;
   }
   
+  // Si ce n'est ni superadmin ni formateur, rediriger vers login
   return <Navigate to="/login" replace />;
 };

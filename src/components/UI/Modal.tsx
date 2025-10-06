@@ -1,0 +1,118 @@
+import React from 'react';
+import { clsx } from 'clsx';
+import { X } from 'lucide-react';
+import { Button } from './Button';
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  showCloseButton?: boolean;
+}
+
+export const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  children,
+  size = 'md',
+  showCloseButton = true,
+}) => {
+  const dialogRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    // Focus le premier élément focusable
+    const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusables && focusables.length > 0) {
+      focusables[0].focus();
+    }
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      } else if (e.key === 'Tab' && focusables && focusables.length > 0) {
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', handleKey, true);
+    return () => {
+      document.removeEventListener('keydown', handleKey, true);
+      previouslyFocused?.focus();
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  const sizeClasses = {
+    sm: 'max-w-md',
+    md: 'max-w-lg',
+    lg: 'max-w-2xl',
+    xl: 'max-w-4xl',
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <div 
+      className="fixed inset-0 z-50 overflow-y-auto"
+      onClick={handleBackdropClick}
+    >
+      {/* Overlay */}
+      <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" />
+
+        {/* Modal */}
+        <div
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
+          className={clsx(
+            'inline-block w-full transform overflow-hidden rounded-xl bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:align-middle outline-none',
+            sizeClasses[size]
+          )}
+          tabIndex={-1}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+            {showCloseButton && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onClose}
+                className="p-2"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="px-6 py-4">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

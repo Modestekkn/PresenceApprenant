@@ -1,0 +1,46 @@
+/* Styles pour les toasts */
+.toast-progress {
+  transition: width 100ms linear;
+}
+
+/* Animation pour les toasts */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast-enter {
+  animation: slideInFromRight 300ms ease-out;
+}
+
+.toast-exit {
+  animation: slideOutToRight 300ms ease-in;
+}
+
+/* Style pour la barre de progression dynamique */
+[data-progress] {
+  width: var(--progress, 100%);
+}
+
+/* Hover effects */
+.toast-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}

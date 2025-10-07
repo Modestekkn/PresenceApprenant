@@ -172,15 +172,15 @@ Cette action supprimera également toutes les sessions associées à cette forma
       accessor: (row: Record<string, unknown>) => {
         const formation = row as unknown as Formation;
         return (
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-              <BookOpen className="w-4 h-4 text-primary-600" />
+          <div className="flex items-start space-x-2 sm:space-x-3 min-w-0">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 text-primary-600" />
             </div>
-            <div>
-              <p className="font-medium text-gray-900">
+            <div className="min-w-0 flex-1">
+              <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
                 {formation.nom_formation}
               </p>
-              <p className="text-sm text-gray-500 line-clamp-1">
+              <p className="text-xs sm:text-sm text-gray-500 line-clamp-2 sm:line-clamp-1">
                 {formation.description}
               </p>
             </div>
@@ -193,11 +193,12 @@ Cette action supprimera également toutes les sessions associées à cette forma
       header: 'Formateur',
       accessor: (row: Record<string, unknown>) => {
         const formation = row as unknown as Formation;
+        const formateurName = getFormateurName(formation.id_formateur);
         return (
-          <div className="flex items-center space-x-2">
-            <User className="w-4 h-4 text-gray-400" />
-            <span className="text-gray-900">
-              {getFormateurName(formation.id_formateur)}
+          <div className="flex items-center space-x-1 sm:space-x-2 min-w-0">
+            <User className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+            <span className="text-gray-900 text-xs sm:text-sm truncate" title={formateurName}>
+              {formateurName}
             </span>
           </div>
         );
@@ -205,17 +206,21 @@ Cette action supprimera également toutes les sessions associées à cette forma
     },
     {
       key: 'created_at',
-      header: 'Date de création',
+      header: 'Date',
       accessor: (row: Record<string, unknown>) => {
         const formation = row as unknown as Formation;
+        const dateStr = formation.created_at ? 
+          new Date(formation.created_at).toLocaleDateString('fr-FR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit'
+          }) : 
+          'N/A';
         return (
-          <div className="flex items-center space-x-2">
-            <Calendar className="w-4 h-4 text-gray-400" />
-            <span className="text-gray-900">
-              {formation.created_at ? 
-                new Date(formation.created_at).toLocaleDateString('fr-FR') : 
-                'Non disponible'
-              }
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+            <span className="text-gray-900 text-xs sm:text-sm whitespace-nowrap">
+              {dateStr}
             </span>
           </div>
         );
@@ -227,22 +232,24 @@ Cette action supprimera également toutes les sessions associées à cette forma
       accessor: (row: Record<string, unknown>) => {
         const formation = row as unknown as Formation;
         return (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 sm:space-x-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => handleEdit(formation)}
+              className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5"
             >
-              <Edit className="w-4 h-4 mr-2" />
-              Modifier
+              <Edit className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+              <span className="hidden sm:inline">Modifier</span>
             </Button>
             <Button
               variant="danger"
               size="sm"
               onClick={() => handleDelete(formation)}
+              className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5"
             >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Supprimer
+              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+              <span className="hidden sm:inline">Supprimer</span>
             </Button>
           </div>
         );
@@ -252,16 +259,16 @@ Cette action supprimera également toutes les sessions associées à cette forma
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <Skeleton className="h-8 w-64 mb-2" />
-            <Skeleton className="h-4 w-96" />
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <div className="min-w-0 flex-1">
+            <Skeleton className="h-6 sm:h-8 w-48 sm:w-64 mb-2" />
+            <Skeleton className="h-3 sm:h-4 w-64 sm:w-96" />
           </div>
-          <Skeleton className="h-10 w-32" />
+          <Skeleton className="h-9 sm:h-10 w-full sm:w-32" />
         </div>
-        <div className="flex justify-between items-center">
-          <Skeleton className="h-10 w-80" />
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
+          <Skeleton className="h-9 sm:h-10 w-full sm:w-80" />
         </div>
         <DataTableSkeleton columns={4} />
       </div>
@@ -269,82 +276,88 @@ Cette action supprimera également toutes les sessions associées à cette forma
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* En-tête */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des Formations</h1>
-          <p className="text-gray-600 mt-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">Gestion des Formations</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
             Gérez les formations de votre centre de formation
           </p>
         </div>
-        <Button 
-          onClick={handleAdd}
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Ajouter une formation
-        </Button>
+        <div className="flex-shrink-0">
+          <Button 
+            onClick={handleAdd}
+            className="w-full sm:w-auto"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Ajouter une formation</span>
+            <span className="sm:hidden">Ajouter</span>
+          </Button>
+        </div>
       </div>
 
       {/* Statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-primary-100 rounded-lg">
-              <BookOpen className="w-6 h-6 text-primary-600" />
+            <div className="p-2 bg-primary-100 rounded-lg flex-shrink-0">
+              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">{formations.length}</p>
-              <p className="text-gray-600">Total formations</p>
+            <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 truncate">{formations.length}</p>
+              <p className="text-sm sm:text-base text-gray-600 truncate">Total formations</p>
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <User className="w-6 h-6 text-green-600" />
+            <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
+              <User className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">{formateurs.length}</p>
-              <p className="text-gray-600">Formateurs actifs</p>
+            <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 truncate">{formateurs.length}</p>
+              <p className="text-sm sm:text-base text-gray-600 truncate">Formateurs actifs</p>
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Clock className="w-6 h-6 text-blue-600" />
+            <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+              <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-2xl font-bold text-gray-900">
+            <div className="ml-3 sm:ml-4 min-w-0 flex-1">
+              <p className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
                 {formations.filter(f => new Date(f.created_at || 0) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length}
               </p>
-              <p className="text-gray-600">Nouvelles (30j)</p>
+              <p className="text-sm sm:text-base text-gray-600 truncate">Nouvelles (30j)</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Barre de recherche */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
         <Input
           placeholder="Rechercher une formation..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           icon={<Search className="w-4 h-4 text-gray-400" />}
-          className="max-w-md"
+          className="w-full sm:max-w-xs lg:max-w-md"
         />
       </div>
 
       {/* Table des formations */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-        <DataTable
-          data={filteredFormations as unknown as Record<string, unknown>[]}
-          columns={columns}
-          emptyMessage="Aucune formation trouvée"
-        />
+      <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <DataTable
+            data={filteredFormations as unknown as Record<string, unknown>[]}
+            columns={columns}
+            emptyMessage="Aucune formation trouvée"
+          />
+        </div>
       </div>
 
       {/* Modal d'ajout/modification */}
@@ -353,68 +366,73 @@ Cette action supprimera également toutes les sessions associées à cette forma
         onClose={() => setIsModalOpen(false)}
         title={selectedFormation ? 'Modifier la formation' : 'Ajouter une formation'}
       >
-        <div className="space-y-4">
-          <Input
-            label="Nom de la formation"
-            value={formData.nom_formation}
-            onChange={(e) => setFormData({ ...formData, nom_formation: e.target.value })}
-            error={errors.nom_formation}
-            required
-            requiredIndicator
-            placeholder="Ex: Développement Web, Formation React..."
-          />
-          
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Description
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-            <textarea
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-              rows={4}
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Décrivez les objectifs et le contenu de la formation..."
+          <div className="space-y-3 sm:space-y-4">
+            <Input
+              label="Nom de la formation"
+              value={formData.nom_formation}
+              onChange={(e) => setFormData({ ...formData, nom_formation: e.target.value })}
+              error={errors.nom_formation}
+              required
+              requiredIndicator
+              placeholder="Ex: Développement Web, Formation React..."
+              className="text-sm sm:text-base"
             />
-            {errors.description && (
-              <p className="text-sm text-red-600">{errors.description}</p>
-            )}
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Description
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <textarea
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                rows={3}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Décrivez les objectifs et le contenu de la formation..."
+              />
+              {errors.description && (
+                <p className="text-sm text-red-600">{errors.description}</p>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Formateur responsable
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <select
+                className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                value={formData.id_formateur}
+                onChange={(e) => setFormData({ ...formData, id_formateur: parseInt(e.target.value) })}
+              >
+                <option value={0}>Sélectionner un formateur</option>
+                {formateurs.map((formateur) => (
+                  <option key={formateur.id_formateur} value={formateur.id_formateur}>
+                    {formateur.prenom} {formateur.nom} - {formateur.email}
+                  </option>
+                ))}
+              </select>
+              {errors.id_formateur && (
+                <p className="text-sm text-red-600">{errors.id_formateur}</p>
+              )}
+            </div>
+            
+            <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 mt-6 pt-4 border-t border-gray-200">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsModalOpen(false)}
+                className="w-full sm:w-auto order-2 sm:order-1"
+              >
+                Annuler
+              </Button>
+              <Button 
+                onClick={handleSave}
+                className="w-full sm:w-auto order-1 sm:order-2"
+              >
+                {selectedFormation ? 'Modifier' : 'Ajouter'}
+              </Button>
+            </div>
           </div>
-          
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Formateur responsable
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-            <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              value={formData.id_formateur}
-              onChange={(e) => setFormData({ ...formData, id_formateur: parseInt(e.target.value) })}
-            >
-              <option value={0}>Sélectionner un formateur</option>
-              {formateurs.map((formateur) => (
-                <option key={formateur.id_formateur} value={formateur.id_formateur}>
-                  {formateur.prenom} {formateur.nom} - {formateur.email}
-                </option>
-              ))}
-            </select>
-            {errors.id_formateur && (
-              <p className="text-sm text-red-600">{errors.id_formateur}</p>
-            )}
-          </div>
-          
-          <div className="flex justify-end space-x-3 mt-6">
-            <Button 
-              variant="outline" 
-              onClick={() => setIsModalOpen(false)}
-            >
-              Annuler
-            </Button>
-            <Button onClick={handleSave}>
-              {selectedFormation ? 'Modifier' : 'Ajouter'}
-            </Button>
-          </div>
-        </div>
       </Modal>
 
       {/* Modal de confirmation */}

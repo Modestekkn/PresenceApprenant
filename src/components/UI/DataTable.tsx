@@ -46,7 +46,7 @@ export function DataTable<T extends Record<string, unknown>>({
   return (
     <div className="w-full overflow-x-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm">
       <table className={clsx('min-w-full text-sm', dense && 'text-xs')}> 
-        <thead className="bg-gray-50 dark:bg-[var(--color-bg-alt)]/60">
+        <thead className="bg-gray-50 ">
           <tr>
             {columns.map(col => {
               const active = sortKey === col.key && sortDirection;
@@ -56,9 +56,9 @@ export function DataTable<T extends Record<string, unknown>>({
                   key={String(col.key)}
                   scope="col"
                   className={clsx(
-                    'px-6 py-3 text-left font-semibold tracking-wide text-gray-600 dark:text-gray-300 text-xs uppercase select-none',
+                    'px-8 py-3 text-left font-semibold tracking-wide text-gray-800 dark:text-gray-800 text-xs uppercase select-none',
                     col.headerClassName,
-                    col.sortable && 'cursor-pointer hover:text-gray-900 dark:hover:text-gray-100'
+                    col.sortable && 'cursor-pointer hover:text-gray-900 dark:hover:text-gray-700'
                   )}
                   onClick={() => handleSort(col)}
                 >
@@ -74,7 +74,7 @@ export function DataTable<T extends Record<string, unknown>>({
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
           {data.length === 0 && (
             <tr>
-              <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400 text-sm">
+              <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-800 dark:text-gray-800 text-sm">
                 {emptyMessage}
               </td>
             </tr>
@@ -89,9 +89,9 @@ export function DataTable<T extends Record<string, unknown>>({
               )}
             >
               {columns.map(col => (
-                <td key={String(col.key)} className={clsx('px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100', col.className)}>
+                <td key={String(col.key)} className={clsx('px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-800', col.className)}>
                   <div className="block md:contents md:space-y-0 space-y-1">
-                    <span className="md:hidden block text-xs uppercase font-medium text-gray-500 dark:text-gray-400">{col.mobileLabel || col.header}</span>
+                    <span className="md:hidden block text-xs uppercase font-medium text-gray-800 dark:text-gray-800">{col.mobileLabel || col.header}</span>
                     <span className="block">
                       {col.accessor ? col.accessor(row) : String(row[col.key as keyof T] ?? '')}
                     </span>

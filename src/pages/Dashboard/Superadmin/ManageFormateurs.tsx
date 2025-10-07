@@ -207,7 +207,7 @@ export const ManageFormateurs: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">Gestion des Formateurs</h1>
           <p className="text-gray-600 mt-2">Gérez les comptes des formateurs</p>
         </div>
-        <Button onClick={handleAdd} className="flex items-center space-x-2">
+        <Button variant='primary' onClick={handleAdd} className="flex items-center border-gray-100 bg-green-700 hover:bg-green-900 space-x-2">
           <Plus className="w-4 h-4" />
           <span>Ajouter un formateur</span>
         </Button>
@@ -249,13 +249,13 @@ export const ManageFormateurs: React.FC = () => {
               accessor: (f: Formateur) => (
                 <div className="flex items-center gap-2">
                   <Button
-                    variant="outline"
+                    variant="warning"
                     size="sm"
                     onClick={() => handleEdit(f)}
                     className="p-2"
                     aria-label="Modifier"
                   >
-                    <Edit className="w-4 h-4" />
+                    <Edit className="w-4 h-4 text-white" />
                   </Button>
                   <Button
                     variant="danger"
@@ -264,7 +264,7 @@ export const ManageFormateurs: React.FC = () => {
                     className="p-2"
                     aria-label="Supprimer"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4 text-white" />
                   </Button>
                 </div>
               ),

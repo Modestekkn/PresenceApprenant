@@ -17,15 +17,15 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed';
   
   const variantStyles = {
-    primary: 'bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 text-white',
-    secondary: 'bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 text-white',
-    success: 'bg-success-600 hover:bg-success-700 focus:ring-success-500 text-white',
-    warning: 'bg-warning-600 hover:bg-warning-700 focus:ring-warning-500 text-white',
-    danger: 'bg-danger-600 hover:bg-danger-700 focus:ring-danger-500 text-white',
-    outline: 'border border-gray-300 bg-white hover:bg-gray-50 focus:ring-primary-500 text-gray-700',
+    primary: 'bg-blue-500 hover:bg-blue-600 focus:ring-blue-500 text-white',
+    secondary: 'bg-gray-500 hover:bg-gray-600 focus:ring-gray-500 text-white',
+    success: 'bg-green-500 hover:bg-green-600 focus:ring-success-500 text-white',
+    warning: 'bg-amber-500 hover:bg-amber-600 focus:ring-amber-500 text-white',
+    danger: 'bg-red-500 hover:bg-red-600 focus:ring-red-500 text-white',
+    outline: 'border border-gray-300 bg-white hover:bg-gray-50 focus:ring-blue-500 text-gray-700',
   };
 
   const sizeStyles = {

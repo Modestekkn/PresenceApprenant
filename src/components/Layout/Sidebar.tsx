@@ -47,9 +47,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
               to={menu.path}
               className={({ isActive }) =>
                 clsx(
-                  'flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors',
+                  'flex items-center px-4 py-3 text-sm text-gray-900 font-medium rounded-lg transition-colors',
                   isActive
-                    ? 'bg-primary-100 text-primary-700 border-r-2 border-primary-600'
+                    ? 'bg-blue-50 text-gray-700 border-r-2 border-blue-600'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 )
               }
@@ -64,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
         {/* Information en bas */}
         <div className="p-4 border-t border-gray-200">
           <div className="text-xs text-gray-500 text-center">
-            <p>Version 1.0.0</p>
+            <p>Version 1.8.0</p>
             <p>© 2025 Système de Présence</p>
           </div>
         </div>

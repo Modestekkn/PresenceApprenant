@@ -26,7 +26,7 @@ export const Navbar: React.FC = () => {
 
           {/* Logo et Titre */}
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center mr-3 shadow-sm">
+            <div className="w-8 h-8 bg-gray-500 rounded-lg flex items-center justify-center mr-3 shadow-sm">
               <User className="w-5 h-5 text-white" />
             </div>
             <h1 className="text-lg sm:text-xl font-bold tracking-tight text-gray-800">
@@ -45,7 +45,7 @@ export const Navbar: React.FC = () => {
           </button>
           
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center font-bold text-sm">
+            <div className="w-9 h-9 bg-green-100 text-primary-600 rounded-full flex items-center justify-center font-bold text-sm">
               {user?.prenom?.charAt(0)}{user?.nom?.charAt(0)}
             </div>
             <div className="hidden sm:block text-right">

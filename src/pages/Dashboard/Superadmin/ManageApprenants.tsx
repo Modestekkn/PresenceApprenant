@@ -115,7 +115,10 @@ export const ManageApprenants: React.FC = () => {
   const handleDelete = (apprenant: Apprenant) => {
     showConfirmation({
       title: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer l'apprenant "${apprenant.prenom} ${apprenant.nom}" ?`,
+      message: `Êtes-vous sûr de vouloir supprimer l'apprenant "${apprenant.prenom} ${apprenant.nom}" ?\n\nCette action est irréversible.`,
+      type: 'danger',
+      confirmText: 'Supprimer',
+      cancelText: 'Annuler',
       onConfirm: async () => {
         try {
           await apprenantStorage.delete(apprenant.id_apprenant!);
@@ -404,11 +407,14 @@ export const ManageApprenants: React.FC = () => {
       {/* Modal de confirmation */}
       <ConfirmationModal
         isOpen={confirmationState.isOpen}
-        onClose={handleCancel}
+        onClose={confirmationState.isLoading ? () => {} : handleCancel}
         title={confirmationState.title}
         message={confirmationState.message}
         onConfirm={handleConfirm}
-        type="danger"
+        type={confirmationState.type}
+        confirmText={confirmationState.confirmText}
+        cancelText={confirmationState.cancelText}
+        isLoading={confirmationState.isLoading}
       />
     </div>
   );

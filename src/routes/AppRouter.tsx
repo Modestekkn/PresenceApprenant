@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from '../contexts/AuthContext';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { PrivateRoute } from './PrivateRoute';
 import { Login } from '../pages/Login';
 
@@ -10,62 +10,63 @@ import { DashboardFormateur } from '../pages/Dashboard/Formateur/DashboardFormat
 
 export const AppRouter: React.FC = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Route publique - Connexion */}
-          <Route path="/login" element={<Login />} />
+    <Routes>
+      {/* Route publique - Connexion */}
+      <Route path="/login" element={<Login />} />
 
-          {/* Routes protégées - Dashboard Superadmin */}
-          <Route 
-            path="/dashboard/superadmin/*" 
-            element={
-              <PrivateRoute roles={['superadmin']}>
-                <DashboardSuperadmin />
-              </PrivateRoute>
-            } 
-          />
+      {/* Routes protégées - Dashboard Superadmin */}
+      <Route 
+        path="/dashboard/superadmin/*" 
+        element={
+          <PrivateRoute roles={['superadmin']}>
+            <DashboardSuperadmin />
+          </PrivateRoute>
+        } 
+      />
 
-          {/* Routes protégées - Dashboard Formateur */}
-          <Route 
-            path="/dashboard/formateur/*" 
-            element={
-              <PrivateRoute roles={['formateur']}>
-                <DashboardFormateur />
-              </PrivateRoute>
-            } 
-          />
+      {/* Routes protégées - Dashboard Formateur */}
+      <Route 
+        path="/dashboard/formateur/*" 
+        element={
+          <PrivateRoute roles={['formateur']}>
+            <DashboardFormateur />
+          </PrivateRoute>
+        } 
+      />
 
-          {/* Route par défaut - Dashboard */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <PrivateRoute>
-                <DashboardRedirect />
-              </PrivateRoute>
-            } 
-          />
+      {/* Route par défaut - Redirection vers le dashboard approprié */}
+      <Route 
+        path="/dashboard" 
+        element={
+          <PrivateRoute>
+            <DashboardRedirect />
+          </PrivateRoute>
+        } 
+      />
 
-          {/* Route par défaut - Redirection */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      {/* Redirection de la racine vers /dashboard */}
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* Route 404 */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+      {/* Route 404 - Redirige vers la page de connexion si l'URL est inconnue */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 };
 
+// Ce composant est maintenant rendu à l'intérieur d'une PrivateRoute,
+// donc nous sommes sûrs que `user` existe.
 const DashboardRedirect: React.FC = () => {
-  const user = JSON.parse(localStorage.getItem('attendance_user_data') || '{}');
+  const { user } = useAuth();
   
-  if (user.role === 'superadmin') {
+  if (user?.role === 'superadmin') {
     return <Navigate to="/dashboard/superadmin" replace />;
-  } else if (user.role === 'formateur') {
+  } 
+  
+  if (user?.role === 'formateur') {
     return <Navigate to="/dashboard/formateur" replace />;
   }
   
-  // Si ce n'est ni superadmin ni formateur, rediriger vers login
+  // Fallback au cas où le rôle ne serait pas défini, ne devrait pas arriver
+  // grâce à la PrivateRoute.
   return <Navigate to="/login" replace />;
 };

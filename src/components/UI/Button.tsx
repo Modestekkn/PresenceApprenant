@@ -3,7 +3,7 @@ import { clsx } from 'clsx';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'icon';
   isLoading?: boolean;
   children: React.ReactNode;
 }
@@ -32,6 +32,7 @@ export const Button: React.FC<ButtonProps> = ({
     sm: 'px-3 py-2 text-sm',
     md: 'px-4 py-2 text-base',
     lg: 'px-6 py-3 text-lg',
+    icon: 'h-9 w-9 flex items-center justify-center',
   };
 
   return (

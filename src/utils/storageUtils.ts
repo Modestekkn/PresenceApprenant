@@ -434,24 +434,23 @@ export const rapportStorage = {
     await db.rapports.delete(id);
   },
 
-  async getRapportsWithDetails() {
+  async getAllWithDetails() {
     const rapports = await db.rapports.toArray();
-    const rapportsWithDetails = [];
     
-    for (const rapport of rapports) {
-      const session = await db.sessions.get(rapport.id_session);
-      const formateur = await db.formateurs.get(rapport.id_formateur);
-      const formation = session ? await db.formations.get(session.id_formation) : null;
-      
-      rapportsWithDetails.push({
-        ...rapport,
-        session: session ? `${session.date_session} (${session.heure_debut}-${session.heure_fin})` : 'Session inconnue',
-        formateur: formateur ? `${formateur.prenom} ${formateur.nom}` : 'Formateur inconnu',
-        formation: formation?.nom_formation || 'Formation inconnue'
-      });
-    }
-    
-    return rapportsWithDetails;
+    return await Promise.all(
+      rapports.map(async (rapport) => {
+        const session = await db.sessions.get(rapport.id_session);
+        const formateur = await db.formateurs.get(rapport.id_formateur);
+        const formation = session ? await db.formations.get(session.id_formation) : null;
+        
+        return {
+          ...rapport,
+          session_nom: formation?.nom_formation || 'Session inconnue',
+          formateur_nom: formateur?.nom || 'Inconnu',
+          formateur_prenom: formateur?.prenom || 'Formateur',
+        };
+      })
+    );
   }
 };
 

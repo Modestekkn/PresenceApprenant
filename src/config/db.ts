@@ -73,6 +73,7 @@ export interface Rapport {
   type_rapport: 'texte' | 'fichier';
   contenu: string;
   date_soumission: string;
+  statut: 'Soumis' | 'En attente' | 'Validé' | 'Rejeté';
   created_at?: Date;
 }
 

@@ -209,7 +209,7 @@ export const ManageFormateurs: React.FC = () => {
         </div>
         <Button variant='primary' onClick={handleAdd} className="flex items-center border-gray-100 bg-green-700 hover:bg-green-900 space-x-2">
           <Plus className="w-4 h-4" />
-          <span>Ajouter un formateur</span>
+          <span>Ajouter</span>
         </Button>
       </div>
 
@@ -333,7 +333,7 @@ export const ManageFormateurs: React.FC = () => {
           />
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="outline" type="button" onClick={() => setIsModalOpen(false)}>Annuler</Button>
-            <Button type="submit">{selectedFormateur ? 'Mettre à jour' : 'Créer'}</Button>
+            <Button type="submit">{selectedFormateur ? 'Mettre à jour' : 'Ajouter'}</Button>
           </div>
         </form>
       </Modal>

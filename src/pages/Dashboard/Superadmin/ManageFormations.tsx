@@ -291,7 +291,7 @@ Cette action supprimera également toutes les sessions associées à cette forma
             className="w-full sm:w-auto"
           >
             <Plus className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Ajouter une formation</span>
+            <span className="hidden sm:inline">Ajouter</span>
             <span className="sm:hidden">Ajouter</span>
           </Button>
         </div>

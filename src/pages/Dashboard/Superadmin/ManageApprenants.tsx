@@ -281,7 +281,7 @@ export const ManageApprenants: React.FC = () => {
           onClick={handleAdd}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Ajouter un apprenant
+          Ajouter
         </Button>
       </div>
 
@@ -387,7 +387,7 @@ export const ManageApprenants: React.FC = () => {
             value={formData.numero_telephone}
             onChange={(e) => setFormData({ ...formData, numero_telephone: e.target.value })}
             error={errors.numero_telephone}
-            helperText="Optionnel - format: +33123456789 ou 0123456789"
+            helperText="Optionnel - format: +2290153456789 ou 0123456789"
           />
           
           <div className="flex justify-end space-x-3 mt-6">

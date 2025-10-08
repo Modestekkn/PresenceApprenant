@@ -1,10 +1,168 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Search, FileText, User, Clock, Calendar, Eye } from 'lucide-react';
+import { rapportStorage } from '../../../utils/storageUtils';
+import { Input } from '../../../components/UI/Input';
+import { DataTable, DataTableSkeleton } from '../../../components/UI/DataTable';
+import { useToast } from '../../../components/UI/useToast';
+import { Button } from '../../../components/UI/Button';
+import { Badge } from '../../../components/UI/Badge';
+
+// Définition du type pour un rapport avec détails
+type RapportWithDetails = {
+  id_rapport: number;
+  contenu: string;
+  date_soumission: string;
+  id_session: number;
+  session_nom: string; 
+  formateur_nom: string;
+  formateur_prenom: string;
+  statut: 'Soumis' | 'En attente' | 'Validé' | 'Rejeté';
+} & Record<string, unknown>;
 
 export const ViewRapports: React.FC = () => {
+  const { showError } = useToast();
+  const [rapports, setRapports] = useState<RapportWithDetails[]>([]);
+  const [filteredRapports, setFilteredRapports] = useState<RapportWithDetails[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Charger les rapports
+  const loadRapports = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const data = await rapportStorage.getAllWithDetails(); 
+      // Assurer que le statut a une valeur par défaut si non défini
+      const dataWithStatus = data.map(r => ({ ...r, statut: r.statut || 'En attente' })) as RapportWithDetails[];
+      setRapports(dataWithStatus);
+      setFilteredRapports(dataWithStatus);
+    } catch (error) {
+      console.error('Erreur lors du chargement des rapports:', error);
+      showError('Erreur de chargement', 'Impossible de récupérer les rapports.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [showError]);
+
+  useEffect(() => {
+    loadRapports();
+  }, [loadRapports]);
+
+  // Filtrer les rapports
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredRapports(rapports);
+    } else {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      const filtered = rapports.filter(rapport =>
+        rapport.formateur_nom.toLowerCase().includes(lowercasedQuery) ||
+        rapport.formateur_prenom.toLowerCase().includes(lowercasedQuery) ||
+        rapport.session_nom.toLowerCase().includes(lowercasedQuery) ||
+        rapport.statut.toLowerCase().includes(lowercasedQuery)
+      );
+      setFilteredRapports(filtered);
+    }
+  }, [searchQuery, rapports]);
+  
+  const getStatusBadge = (statut: RapportWithDetails['statut']) => {
+    switch (statut) {
+      case 'Soumis':
+        return <Badge variant="info">Soumis</Badge>;
+      case 'Validé':
+        return <Badge variant="success">Validé</Badge>;
+      case 'Rejeté':
+        return <Badge variant="danger">Rejeté</Badge>;
+      case 'En attente':
+        return <Badge variant="warning">En attente</Badge>;
+      default:
+        return <Badge variant="secondary">{statut}</Badge>;
+    }
+  };
+
+  // Colonnes de la table
+  const columns = [
+    {
+      key: 'formateur',
+      header: 'Formateur',
+      accessor: (row: RapportWithDetails) => (
+        <div className="flex items-center space-x-2">
+          <User className="w-4 h-4 text-gray-500" />
+          <span>{row.formateur_prenom} {row.formateur_nom}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'session',
+      header: 'Session',
+      accessor: (row: RapportWithDetails) => (
+        <div className="flex items-center space-x-2">
+          <Clock className="w-4 h-4 text-gray-500" />
+          <span>{row.session_nom}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'date',
+      header: 'Date de soumission',
+      accessor: (row: RapportWithDetails) => (
+        <div className="flex items-center space-x-2">
+          <Calendar className="w-4 h-4 text-gray-500" />
+          <span>{new Date(row.date_soumission).toLocaleDateString()}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'statut',
+      header: 'Statut',
+      accessor: (row: RapportWithDetails) => getStatusBadge(row.statut),
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      accessor: (row: RapportWithDetails) => (
+        <Button variant="outline" size="sm" onClick={() => alert(`Voir rapport ${row.id_rapport}`)}>
+          <Eye className="w-4 h-4 mr-2" />
+          Consulter
+        </Button>
+      ),
+    },
+  ];
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900">Consultation des Rapports</h1>
-      <p className="text-gray-600 mt-2">Page en cours de développement...</p>
+    <div className="space-y-6">
+      <header className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+            <FileText className="w-6 h-6 mr-3 text-primary-600" />
+            Gestion des Rapports
+          </h1>
+          <p className="mt-1 text-sm text-gray-600">
+            Consultez et gérez les rapports soumis par les formateurs.
+          </p>
+        </div>
+      </header>
+
+      <div className="bg-white p-4 rounded-lg shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-full max-w-sm">
+            <Input
+              placeholder="Rechercher par formateur, session, statut..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              icon={<Search className="w-5 h-5 text-gray-400" />}
+            />
+          </div>
+        </div>
+
+        {isLoading ? (
+          <DataTableSkeleton columns={columns.length} />
+        ) : (
+          <DataTable
+            columns={columns}
+            data={filteredRapports}
+            emptyMessage="Aucun rapport trouvé."
+          />
+        )}
+      </div>
     </div>
   );
 };

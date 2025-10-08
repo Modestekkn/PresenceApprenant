@@ -80,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
       {/* Overlay qui s'affiche derrière le menu sur mobile */}
       {isMobile && isSidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-gray-900 bg-opacity-50 transition-opacity lg:hidden"
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm bg-opacity-50 transition-opacity lg:hidden"
           onClick={closeSidebar}
           aria-hidden="true"
         />
@@ -101,7 +101,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
               <h2 className="text-lg font-semibold">Menu</h2>
               <button
                 onClick={closeSidebar}
-                className="p-2 rounded-md hover:bg-gray-100"
+                className="p-2 rounded-md hover:bg-gray-100 cursor-pointer"
               >
                 <X size={24} />
               </button>
@@ -135,6 +135,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
           <div className="p-4 border-t">
             <div className="text-xs text-gray-500 text-center">
               <p>Présence App</p>
+              <p>Application PWA de gestion de la présence des apprenants</p>
               <p>v2.0.0</p>
             </div>
           </div>

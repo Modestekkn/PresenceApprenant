@@ -7,12 +7,14 @@ interface BadgeProps {
   children: React.ReactNode;
   variant?: BadgeVariant;
   className?: string;
+  icon?: React.ReactNode;
 }
 
 export const Badge: React.FC<BadgeProps> = ({ 
   children, 
   variant = 'secondary', 
-  className 
+  className,
+  icon
 }) => {
   const baseStyles = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
 
@@ -27,6 +29,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <span className={clsx(baseStyles, variantStyles[variant], className)}>
+      {icon && <span className="mr-1.5">{icon}</span>}
       {children}
     </span>
   );

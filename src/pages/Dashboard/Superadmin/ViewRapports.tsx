@@ -6,6 +6,7 @@ import { DataTable, DataTableSkeleton } from '../../../components/UI/DataTable';
 import { useToast } from '../../../components/UI/useToast';
 import { Button } from '../../../components/UI/Button';
 import { Badge } from '../../../components/UI/Badge';
+import { RapportDetailModal } from '../../../components/Dashboard/Superadmin/RapportDetailModal';
 
 // Définition du type pour un rapport avec détails
 type RapportWithDetails = {
@@ -20,11 +21,13 @@ type RapportWithDetails = {
 } & Record<string, unknown>;
 
 export const ViewRapports: React.FC = () => {
-  const { showError } = useToast();
+  const { showError, showToast } = useToast();
   const [rapports, setRapports] = useState<RapportWithDetails[]>([]);
   const [filteredRapports, setFilteredRapports] = useState<RapportWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRapport, setSelectedRapport] = useState<RapportWithDetails | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Charger les rapports
   const loadRapports = useCallback(async () => {
@@ -78,6 +81,45 @@ export const ViewRapports: React.FC = () => {
     }
   };
 
+  const handleViewRapport = (rapport: RapportWithDetails) => {
+    setSelectedRapport(rapport);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedRapport(null);
+  };
+
+  const handleStatusChange = async (newStatus: 'Validé' | 'Rejeté') => {
+    if (!selectedRapport) return;
+
+    try {
+      await rapportStorage.update(selectedRapport.id_rapport, { statut: newStatus });
+      
+      const updatedRapports = rapports.map(r => 
+        r.id_rapport === selectedRapport.id_rapport ? { ...r, statut: newStatus } : r
+      );
+      setRapports(updatedRapports);
+      
+      // Mettre à jour la liste filtrée également
+      const updatedFilteredRapports = filteredRapports.map(r => 
+        r.id_rapport === selectedRapport.id_rapport ? { ...r, statut: newStatus } : r
+      );
+      setFilteredRapports(updatedFilteredRapports);
+
+      handleCloseModal();
+      showToast({
+        title: 'Statut mis à jour',
+        message: `Le statut du rapport a été changé en "${newStatus}".`,
+        type: 'success',
+      });
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du statut:", error);
+      showError("Erreur de mise à jour", "Impossible de changer le statut du rapport.");
+    }
+  };
+
   // Colonnes de la table
   const columns = [
     {
@@ -119,7 +161,7 @@ export const ViewRapports: React.FC = () => {
       key: 'actions',
       header: 'Actions',
       accessor: (row: RapportWithDetails) => (
-        <Button variant="outline" size="sm" onClick={() => alert(`Voir rapport ${row.id_rapport}`)}>
+        <Button variant="outline" size="sm" onClick={() => handleViewRapport(row)}>
           <Eye className="w-4 h-4 mr-2" />
           Consulter
         </Button>
@@ -163,6 +205,13 @@ export const ViewRapports: React.FC = () => {
           />
         )}
       </div>
+
+      <RapportDetailModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        rapport={selectedRapport}
+        onStatusChange={handleStatusChange}
+      />
     </div>
   );
 };

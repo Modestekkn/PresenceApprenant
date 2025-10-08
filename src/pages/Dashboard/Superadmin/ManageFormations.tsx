@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Search, Edit, Trash2, BookOpen, User, Calendar, Clock } from 'lucide-react';
-import type { Formation, Formateur } from '../../../config/db';
-import { formationStorage, formateurStorage } from '../../../utils/storageUtils';
-import { Button } from '../../../components/UI/Button';
-import { Input } from '../../../components/UI/Input';
-import { Modal } from '../../../components/UI/Modal';
-import { Skeleton } from '../../../components/UI/Skeleton';
-import { DataTable, DataTableSkeleton } from '../../../components/UI/DataTable';
-import { ConfirmationModal } from '../../../components/UI/ConfirmationModal';
-import { useToast } from '../../../components/UI/useToast';
-import { useConfirmation } from '../../../hooks/useConfirmation';
+import type { Formation, Formateur } from '@/config/db';
+import { formationStorage, formateurStorage } from '@/utils/storageUtils';
+import { Button } from '@/components/UI/Button';
+import { Input } from '@/components/UI/Input';
+import { Modal } from '@/components/UI/Modal';
+import { Skeleton } from '@/components/UI/Skeleton';
+import { DataTable, DataTableSkeleton } from '@/components/UI/DataTable';
+import { ConfirmationModal } from '@/components/UI/ConfirmationModal';
+import { useToast } from '@/components/UI/useToast';
+import { useConfirmation } from '@/hooks/useConfirmation';
 
 export const ManageFormations: React.FC = () => {
   const { showSuccess, showError } = useToast();

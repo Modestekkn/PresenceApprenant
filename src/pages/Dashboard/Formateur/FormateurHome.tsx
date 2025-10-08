@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle, Calendar, FileText } from 'lucide-react';
-import { useAuth } from '../../../hooks/useAuth';
-import { sessionStorage, rapportStorage, sessionApprenantStorage } from '../../../utils/storageUtils';
-import type { Session } from '../../../config/db';
-import { Loader } from '../../../components/UI/Loader';
-import { APP_CONSTANTS } from '../../../config/constants';
+import { useAuth } from '@/hooks/useAuth';
+import { sessionStorage, rapportStorage, sessionApprenantStorage } from '@/utils/storageUtils';
+import type { Session } from '@/config/db';
+import { Loader } from '@/components/UI/Loader';
+import { APP_CONSTANTS } from '@/config/constants';
 
 export const FormateurHome: React.FC = () => {
   const { user } = useAuth();

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { clsx } from "clsx";
-import { useSidebar } from "../../hooks/useSidebar";
+import { useSidebar } from "@/hooks/useSidebar";
 import {
   Home,
   Users,

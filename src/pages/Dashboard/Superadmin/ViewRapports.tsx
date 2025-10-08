@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, FileText, User, Clock, Calendar, Eye } from 'lucide-react';
-import { rapportStorage } from '../../../utils/storageUtils';
-import { Input } from '../../../components/UI/Input';
-import { DataTable, DataTableSkeleton } from '../../../components/UI/DataTable';
-import { useToast } from '../../../components/UI/useToast';
-import { Button } from '../../../components/UI/Button';
-import { Badge } from '../../../components/UI/Badge';
-import { RapportDetailModal } from '../../../components/Dashboard/Superadmin/RapportDetailModal';
+import { rapportStorage } from '@/utils/storageUtils';
+import { Input } from '@/components/UI/Input';
+import { DataTable, DataTableSkeleton } from '@/components/UI/DataTable';
+import { useToast } from '@/components/UI/useToast';
+import { Button } from '@/components/UI/Button';
+import { Badge } from '@/components/UI/Badge';
+import { RapportDetailModal } from '@/components/Dashboard/Superadmin/RapportDetailModal';
 
 // Définition du type pour un rapport avec détails
 type RapportWithDetails = {

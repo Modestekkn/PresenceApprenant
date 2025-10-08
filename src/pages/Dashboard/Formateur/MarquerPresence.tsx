@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, Users, AlertTriangle } from 'lucide-react';
-import { useAuth } from '../../../hooks/useAuth';
-import { usePresence } from '../../../hooks/usePresence';
-import { sessionStorage, sessionApprenantStorage } from '../../../utils/storageUtils';
-import type { Session, Apprenant } from '../../../config/db';
-import { Button } from '../../../components/UI/Button';
-import { Loader } from '../../../components/UI/Loader';
+import { useAuth } from '@/hooks/useAuth';
+import { usePresence } from '@/hooks/usePresence';
+import { sessionStorage, sessionApprenantStorage } from '@/utils/storageUtils';
+import type { Session, Apprenant } from '@/config/db';
+import { Button } from '@/components/UI/Button';
+import { Loader } from '@/components/UI/Loader';
 
 export const MarquerPresence: React.FC = () => {
   const { user } = useAuth();

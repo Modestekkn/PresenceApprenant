@@ -1,12 +1,12 @@
 import React from 'react';
-import { useToast } from '../components/UI/useToast';
-import { useConfirmation } from '../hooks/useConfirmation';
-import { Button } from '../components/UI/Button';
-import { ConfirmationModal } from '../components/UI/ConfirmationModal';
-import { Alert } from '../components/UI/Alert';
-import { TemporaryAlert } from '../components/UI/TemporaryAlert';
-import { Skeleton } from '../components/UI/Skeleton';
-import { OfflineBanner } from '../components/UI/OfflineBanner';
+import { useToast } from '@/components/UI/useToast';
+import { useConfirmation } from '@/hooks/useConfirmation';
+import { Button } from '@/components/UI/Button';
+import { ConfirmationModal } from '@/components/UI/ConfirmationModal';
+import { Alert } from '@/components/UI/Alert';
+import { TemporaryAlert } from '@/components/UI/TemporaryAlert';
+import { Skeleton } from '@/components/UI/Skeleton';
+import { OfflineBanner } from '@/components/UI/OfflineBanner';
 
 export const ComponentDemo: React.FC = () => {
   const { showSuccess, showError, showWarning, showInfo } = useToast();

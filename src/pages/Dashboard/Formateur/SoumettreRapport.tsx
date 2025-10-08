@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Upload, Calendar, CheckCircle } from 'lucide-react';
-import { useAuth } from '../../../hooks/useAuth';
-import { sessionStorage, rapportStorage } from '../../../utils/storageUtils';
-import type { Session, Rapport } from '../../../config/db';
-import { Button } from '../../../components/UI/Button';
-import { Loader } from '../../../components/UI/Loader';
-import { useToast } from '../../../components/UI/useToast';
+import { useAuth } from '@/hooks/useAuth';
+import { sessionStorage, rapportStorage } from '@/utils/storageUtils';
+import type { Session, Rapport } from '@/config/db';
+import { Button } from '@/components/UI/Button';
+import { Loader } from '@/components/UI/Loader';
+import { useToast } from '@/components/UI/useToast';
 
 export const SoumettreRapport: React.FC = () => {
   const { user } = useAuth();

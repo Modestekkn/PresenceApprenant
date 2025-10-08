@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { UserPlus } from 'lucide-react';
-import { sessionStorage, apprenantStorage, sessionApprenantStorage } from '../../../utils/storageUtils';
-import type { Session, Apprenant } from '../../../config/db';
-import { Button } from '../../../components/UI/Button';
-import { Modal } from '../../../components/UI/Modal';
-import { useToast } from '../../../components/UI/useToast';
+import { sessionStorage, apprenantStorage, sessionApprenantStorage } from '@/utils/storageUtils';
+import type { Session, Apprenant } from '@/config/db';
+import { Button } from '@/components/UI/Button';
+import { Modal } from '@/components/UI/Modal';
+import { useToast } from '@/components/UI/useToast';
 
 export const ManageSessions: React.FC = () => {
   const { showSuccess, showError } = useToast();

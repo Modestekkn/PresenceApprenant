@@ -1,6 +1,6 @@
 import React from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { useSidebar } from '../../hooks/useSidebar';
+import { useAuth } from '@/hooks/useAuth';
+import { useSidebar } from '@/hooks/useSidebar';
 import { Button } from '../UI/Button';
 import { User, LogOut, Bell, Menu } from 'lucide-react';
 

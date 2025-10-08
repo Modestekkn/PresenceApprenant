@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Users, GraduationCap, BookOpen, Calendar } from 'lucide-react';
-import { formateurStorage, apprenantStorage, formationStorage, sessionStorage, rapportStorage } from '../../../utils/storageUtils';
-import type { Session, Rapport } from '../../../config/db';
-import { Loader } from '../../../components/UI/Loader';
+import { formateurStorage, apprenantStorage, formationStorage, sessionStorage, rapportStorage } from '@/utils/storageUtils';
+import type { Session, Rapport } from '@/config/db';
+import { Loader } from '@/components/UI/Loader';
 
 export const SuperadminHome: React.FC = () => {
   const [stats, setStats] = useState({

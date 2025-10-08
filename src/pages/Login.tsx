@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { Button } from '../components/UI/Button';
-import { Input } from '../components/UI/Input';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/UI/Button';
+import { Input } from '@/components/UI/Input';
 import { User, Lock, AlertCircle } from 'lucide-react';
 
 export const Login: React.FC = () => {

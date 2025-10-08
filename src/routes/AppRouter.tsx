@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { PrivateRoute } from './PrivateRoute';
 import { Login } from '../pages/Login';
 

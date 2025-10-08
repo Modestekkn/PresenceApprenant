@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Edit, Trash2 } from 'lucide-react';
-import type { Formateur } from '../../../config/db';
-import { formateurStorage } from '../../../utils/storageUtils';
-import { Button } from '../../../components/UI/Button';
-import { Input } from '../../../components/UI/Input';
-import { Modal } from '../../../components/UI/Modal';
-import { Skeleton } from '../../../components/UI/Skeleton';
-import { DataTable, DataTableSkeleton } from '../../../components/UI/DataTable';
-import { ConfirmationModal } from '../../../components/UI/ConfirmationModal';
-import { useToast } from '../../../components/UI/useToast';
-import { useConfirmation } from '../../../hooks/useConfirmation';
+import type { Formateur } from '@/config/db';
+import { formateurStorage } from '@/utils/storageUtils';
+import { Button } from '@/components/UI/Button';
+import { Input } from '@/components/UI/Input';
+import { Modal } from '@/components/UI/Modal';
+import { Skeleton } from '@/components/UI/Skeleton';
+import { DataTable, DataTableSkeleton } from '@/components/UI/DataTable';
+import { ConfirmationModal } from '@/components/UI/ConfirmationModal';
+import { useToast } from '@/components/UI/useToast';
+import { useConfirmation } from '@/hooks/useConfirmation';
 
 export const ManageFormateurs: React.FC = () => {
   const { showSuccess, showError } = useToast();

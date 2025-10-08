@@ -232,22 +232,23 @@ Cette action supprimera également toutes les sessions associées à cette forma
       accessor: (row: Record<string, unknown>) => {
         const formation = row as unknown as Formation;
         return (
-          <div className="flex items-center space-x-1 sm:space-x-2">
+          <div className="flex items-center justify-center gap-2">
             <Button
-              variant="outline"
-              size="sm"
+              variant="warning"
+              size="icon"
               onClick={() => handleEdit(formation)}
-              className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5"
+              aria-label="Modifier"
             >
-              <Edit className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
+              <Edit className="w-4 h-4 text-white" />
             </Button>
             <Button
               variant="danger"
-              size="sm"
+              size="icon"
               onClick={() => handleDelete(formation)}
-              className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5"
+              aria-label="Supprimer"
             >
-              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" /></Button>
+              <Trash2 className="w-4 h-4 text-white" />
+            </Button>
           </div>
         );
       }

@@ -247,21 +247,19 @@ export const ManageFormateurs: React.FC = () => {
               key: 'actions',
               header: 'Actions',
               accessor: (f: Formateur) => (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center gap-2">
                   <Button
                     variant="warning"
-                    size="sm"
+                    size="icon"
                     onClick={() => handleEdit(f)}
-                    className="p-2"
                     aria-label="Modifier"
                   >
                     <Edit className="w-4 h-4 text-white" />
                   </Button>
                   <Button
                     variant="danger"
-                    size="sm"
+                    size="icon"
                     onClick={() => handleDelete(f.id_formateur!)}
-                    className="p-2"
                     aria-label="Supprimer"
                   >
                     <Trash2 className="w-4 h-4 text-white" />

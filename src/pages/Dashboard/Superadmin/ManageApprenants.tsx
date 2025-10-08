@@ -226,22 +226,22 @@ export const ManageApprenants: React.FC = () => {
       accessor: (row: Record<string, unknown>) => {
         const apprenant = row as unknown as Apprenant;
         return (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-center gap-2">
             <Button
               variant="warning"
-              size="sm"
+              size="icon"
               onClick={() => handleEdit(apprenant)}
-              className='p-2'
+              aria-label="Modifier"
             >
-              <Edit className="w-4 h-4 mr-2 text-white" />
+              <Edit className="w-4 h-4 text-white" />
             </Button>
             <Button
               variant="danger"
-              size="sm"
+              size="icon"
               onClick={() => handleDelete(apprenant)}
-              className='p-2'
+              aria-label="Supprimer"
             >
-              <Trash2 className="w-4 h-4 mr-2 text-white" />
+              <Trash2 className="w-4 h-4 text-white" />
             </Button>
           </div>
         );

@@ -120,6 +120,7 @@ export const SoumettreRapport: React.FC = () => {
         type_rapport: reportType,
         contenu,
         date_soumission: new Date().toISOString(),
+        statut: 'Soumis' as const,
       };
 
       if (existingRapport) {

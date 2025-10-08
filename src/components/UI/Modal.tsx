@@ -73,46 +73,42 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
       onClick={handleBackdropClick}
     >
-      {/* Overlay */}
-      <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 transition-opacity bg-gray-100 bg-opacity-75" />
-
-        {/* Modal */}
-        <div
-          ref={dialogRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label={title}
-          className={clsx(
-            'inline-block w-full transform overflow-hidden rounded-xl bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:align-middle outline-none',
-            sizeClasses[size]
+      {/* Modal */}
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className={clsx(
+          'relative w-full transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all outline-none',
+          sizeClasses[size]
+        )}
+        tabIndex={-1}
+      >
+        {/* Header */}
+        <div className="relative px-6 py-5 bg-gradient-to-r from-gray-50 to-white border-b border-gray-100">
+          <h3 className="text-xl font-semibold text-gray-900 pr-8">{title}</h3>
+          {showCloseButton && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors border-gray-200"
+              aria-label="Fermer"
+            >
+              <X className="w-5 h-5 text-gray-500" />
+            </Button>
           )}
-          tabIndex={-1}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-            {showCloseButton && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onClose}
-                className="p-2"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            )}
-          </div>
+        </div>
 
-          {/* Content */}
-          <div className="px-6 py-4">
-            {children}
-          </div>
+        {/* Content */}
+        <div className="px-6 py-6 max-h-[70vh] overflow-y-auto">
+          {children}
         </div>
       </div>
     </div>
   );
-};
+}

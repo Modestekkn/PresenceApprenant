@@ -144,7 +144,7 @@ export const ManageApprenants: React.FC = () => {
       } else {
         // Création
         await apprenantStorage.create(formData);
-        showSuccess('Apprenant créé avec succès');
+        showSuccess('Apprenant ajouté avec succès');
       }
       
       setIsModalOpen(false);

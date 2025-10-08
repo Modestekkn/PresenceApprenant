@@ -69,36 +69,37 @@ export const Alert: React.FC<AlertProps> = ({
         ${className}
       `}
     >
-      <div className="flex">
+      <div className="flex items-start">
         <div className="flex-shrink-0">
           <Icon className={`h-5 w-5 ${config.iconColor}`} />
         </div>
-        <div className="ml-3 flex-1">
-          {title && (
-            <h3 className={`text-sm font-medium ${config.titleColor}`}>
-              {title}
-            </h3>
-          )}
-          <div className={`${title ? 'mt-2' : ''} text-sm ${config.textColor}`}>
-            {children}
+        <div className="ml-3 flex-1 md:flex md:justify-between">
+          <div>
+            {title && (
+              <h3 className={`text-sm font-medium ${config.titleColor}`}>
+                {title}
+              </h3>
+            )}
+            <div className={`${title ? 'mt-2' : ''} text-sm ${config.textColor}`}>
+              {children}
+            </div>
           </div>
-        </div>
-        {onClose && (
-          <div className="ml-auto pl-3">
-            <div className="-mx-1.5 -my-1.5">
+          {onClose && (
+            <div className="mt-2 md:mt-0 md:ml-6">
               <button
                 type="button"
                 className={`
-                  inline-flex rounded-md p-1.5 ${config.iconColor} hover:${config.bgColor}
-                  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-${variant}-50 focus:ring-${variant}-600
+                  inline-flex rounded-md p-1.5 ${config.iconColor} hover:bg-opacity-80
+                  focus:outline-none focus:ring-2 focus:ring-offset-2
                 `}
                 onClick={onClose}
               >
+                <span className="sr-only">Fermer</span>
                 <X className="h-5 w-5" />
               </button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

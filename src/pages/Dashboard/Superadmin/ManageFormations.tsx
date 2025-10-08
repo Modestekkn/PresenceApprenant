@@ -240,7 +240,6 @@ Cette action supprimera également toutes les sessions associées à cette forma
               className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5"
             >
               <Edit className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
-              <span className="hidden sm:inline">Modifier</span>
             </Button>
             <Button
               variant="danger"
@@ -248,9 +247,7 @@ Cette action supprimera également toutes les sessions associées à cette forma
               onClick={() => handleDelete(formation)}
               className="text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5"
             >
-              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />
-              <span className="hidden sm:inline">Supprimer</span>
-            </Button>
+              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-1" />            </Button>
           </div>
         );
       }

@@ -233,7 +233,6 @@ export const ManageApprenants: React.FC = () => {
               onClick={() => handleEdit(apprenant)}
             >
               <Edit className="w-4 h-4 mr-2 text-white" />
-              Modifier
             </Button>
             <Button
               variant="danger"
@@ -241,7 +240,6 @@ export const ManageApprenants: React.FC = () => {
               onClick={() => handleDelete(apprenant)}
             >
               <Trash2 className="w-4 h-4 mr-2 text-white" />
-              Supprimer
             </Button>
           </div>
         );

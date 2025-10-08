@@ -64,14 +64,14 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       size="sm"
       showCloseButton={false}
     >
-      <div className={`${wrapper} ${bgColor} ${borderColor} border animate-[fadeIn_.25s_ease-out]`}>
-        <div className="flex-shrink-0 mt-1">
+      <div className={`${wrapper} ${bgColor} ${borderColor} border animate-[fadeIn_.25s_ease-out] flex-col sm:flex-row`}>
+        <div className="flex-shrink-0 mt-1 mx-auto sm:mx-0">
           {iconOverride ? iconOverride : <Icon className={`h-7 w-7 ${iconColor}`} />}
         </div>
-        <div className="space-y-2">
-          <p className="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">{message}</p>
+        <div className="space-y-2 text-center sm:text-left">
+          <p className="text-sm text-gray-700 dark:text-gray-700 leading-relaxed">{message}</p>
           {details && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed border-l pl-3 border-gray-300/60 dark:border-gray-600/60">
+            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed border-l-transparent sm:border-l pl-0 sm:pl-3 border-gray-300/60 dark:border-gray-600/60">
               {details}
             </p>
           )}

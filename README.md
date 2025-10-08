@@ -412,6 +412,6 @@ copies or substantial portions of the Software.
 
 [Démo en Ligne](https://presence-app-demo.vercel.app) • [Documentation](./docs) • [Signaler un Bug](https://github.com/Modestekkn/RegistrePresence/issues)
 
-*Développé avec par l'équipe H4-SERVICES*
+*Développé avec par ModeDevIT H4-SERVICES*
 
 </div>

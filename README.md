@@ -1,6 +1,6 @@
 # **PWA Gestion de Présence** - *Système de Suivi Intelligent*
 
-> **Application Web Progressive moderne pour la gestion automatisée des présences en formation**
+> **Application Web Progressive moderne pour la gestion automatisée des présences en formation.**
 
 [![React](https://img.shields.io/badge/React-19.1.1-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue.svg)](https://www.typescriptlang.org/)
@@ -10,11 +10,11 @@
 
 ---
 
-## **Aperçu du Projet**
+## **Aperçu du projet**
 
 **PWA Gestion de Présence** est une application web progressive conçue pour automatiser et optimiser le suivi des présences dans les formations professionnelles. Elle offre une interface intuitive, des contrôles temporels précis et une gestion multi-rôles complète.
 
-### **Fonctionnalités Principales**
+### **Fonctionnalités principales**
 
 - **Authentification Multi-Rôles** (Superadmin / Formateur)
 - **Contrôles Temporels Stricts** (07:30-08:00 pour la prise de présence)
@@ -28,9 +28,9 @@
 
 ---
 
-## **Architecture Technique**
+## **Architecture technique**
 
-### **Stack Technologique**
+### **Stack technologique**
 ```
 Frontend:    React 19 + TypeScript + Vite
 Styling:     Tailwind CSS + CSS Variables
@@ -42,7 +42,7 @@ Build:       Vite + ESBuild
 Linting:     ESLint + TypeScript ESLint
 ```
 
-### **Structure du Projet**
+### **Structure du projet**
 ```
 presence-apprenant/
 ├── public/
@@ -81,9 +81,9 @@ presence-apprenant/
 
 ---
 
-## **Base de Données**
+## **Base de données**
 
-### **Schéma des Tables (IndexedDB)**
+### **Schéma des tables (IndexedDB)**
 
 | Table | Description | Champs Principaux |
 |-------|-------------|-------------------|
@@ -104,7 +104,7 @@ presence-apprenant/
 
 ---
 
-## **Gestion des Rôles**
+## **Gestion des rôles**
 
 ### **Superadmin**
 -  Gestion complète des formateurs (CRUD)
@@ -127,7 +127,7 @@ presence-apprenant/
 
 ---
 
-## **Installation & Configuration**
+## **Installation et configuration**
 
 ### **Prérequis**
 - Node.js (v18.0+)
@@ -153,7 +153,7 @@ pnpm build
 pnpm preview
 ```
 
-### **Scripts Disponibles**
+### **Scripts disponibles**
 ```bash
 pnpm dev       # Serveur de développement (localhost:5173)
 pnpm build     # Build de production
@@ -163,7 +163,7 @@ pnpm lint      # Vérification ESLint
 
 ---
 
-## **Comptes de Test**
+## **Comptes de test**
 
 ### **Superadmin**
 ```
@@ -186,20 +186,20 @@ Password: formateur123
 2. Utiliser les comptes de test ci-dessus
 3. Sélectionner le rôle approprié lors de la connexion
 
-### **2. Prise de Présence (Formateur)**
+### **2. Prise de présence (Formateur)**
 1. Se connecter en tant que formateur
 2. Aller dans "Marquer Présences"
 3. **Important**: La prise de présence n'est autorisée qu'entre **07:30** et **08:00**
 4. Marquer sa propre présence en premier
 5. Marquer la présence/absence de chaque apprenant
 
-### **3. Gestion Administrative (Superadmin)**
+### **3. Gestion administrative (Superadmin)**
 1. Dashboard avec statistiques globales
 2. "Gérer Formateurs" : Ajouter/Modifier/Supprimer
 3. "Gérer Sessions" : Planifier et organiser les sessions
 4. "Voir Rapports" : Consulter tous les rapports
 
-### **4. Soumission de Rapports (Formateur)**
+### **4. Soumission de rapports (Formateur)**
 1. Aller dans "Soumettre Rapport"
 2. Sélectionner la session concernée
 3. Rédiger le rapport de formation
@@ -208,9 +208,9 @@ Password: formateur123
 
 ---
 
-## **Configuration Avancée**
+## **Configuration avancée**
 
-### **Variables d'Environnement**
+### **Variables d'environnement**
 ```env
 # .env.local
 VITE_APP_NAME=PWA Gestion de Présence
@@ -243,26 +243,26 @@ export default defineConfig({
 
 ---
 
-## **Fonctionnalités Détaillées**
+## **Fonctionnalités détaillées**
 
-### **Contrôles Temporels**
+### **Contrôles temporels**
 - Validation stricte des heures de présence (07:30-08:00)
 - Horloge en temps réel dans l'interface
 - Blocage automatique hors période autorisée
 - Timestamps précis pour toutes les actions
 
-### **Stockage Local**
+### **Stockage local**
 - Base de données IndexedDB avec Dexie.js
 - Stockage automatique de tous les événements
 - Persistence des données en mode hors-ligne
 - Synchronisation automatique lors de la reconnexion
 
-### **Interface Responsive**
+### **Interface responsive**
 - Design adaptatif mobile-first
 - Interface tactile optimisée
 - Navigation intuitive
 
-### **Mode Hors-ligne**
+### **Mode hors-ligne**
 - Fonctionnement complet sans connexion
 - Cache intelligent des données
 - Synchronisation différée
@@ -271,7 +271,7 @@ export default defineConfig({
 ---
 
 
-### **Qualité du Code**
+### **Qualité du code**
 -  TypeScript strict activé
 -  ESLint avec règles strictes
 -  Prettier pour le formatage
@@ -282,7 +282,7 @@ export default defineConfig({
 
 ## **Déploiement**
 
-### **Build de Production**
+### **Build de production**
 ```bash
 # Générer les fichiers optimisés
 pnpm build
@@ -291,13 +291,13 @@ pnpm build
 pnpm preview
 ```
 
-### **Hébergement Recommandé**
+### **Hébergement recommandé**
 - **Vercel** (Déploiement automatique)
 - **Netlify** (PWA optimisé)
 - **GitHub Pages** (Gratuit)
 - **Firebase Hosting** (Intégration Google)
 
-### **Configuration Serveur**
+### **Configuration serveur**
 ```nginx
 # nginx.conf pour PWA
 location / {
@@ -313,7 +313,7 @@ location /static {
 
 ---
 
-## **Roadmap & Améliorations**
+## **Roadmap et améliorations**
 
 ### **Version 1.1** (En cours)
 - [ ] Interface Apprenant complète
@@ -337,14 +337,14 @@ location /static {
 
 ## **Contribution**
 
-### **Comment Contribuer**
+### **Comment contribuer**
 1. Fork du projet
 2. Créer une branche feature (`git checkout -b feature/nouvelle-fonctionnalite`)
 3. Commit des changements (`git commit -m 'Ajout nouvelle fonctionnalité'`)
 4. Push vers la branche (`git push origin feature/nouvelle-fonctionnalite`)
 5. Ouvrir une Pull Request
 
-### **Standards de Code**
+### **Standards de code**
 - Utiliser TypeScript strict
 - Suivre les conventions de nommage
 - Commenter le code complexe
@@ -353,7 +353,7 @@ location /static {
 
 ---
 
-## **Support & Contact**
+## **Support et contact**
 
 ### **Documentation**
 - [Documentation API](./docs/api.md)
@@ -366,7 +366,7 @@ location /static {
 - [Demander une Fonctionnalité](https://github.com/Modestekkn/RegistrePresence/issues/new)
 
 
-### **Équipe de Développement**
+### **Équipe de développement**
 - **Lead Developer**: [Modeste KKN](https://github.com/Modestekkn)
 - **Project Manager**: H4-SERVICES
 - **UI/UX Designer**: Équipe Design
@@ -408,10 +408,10 @@ copies or substantial portions of the Software.
 
 <div align="center">
 
-**⭐ N'oubliez pas de donner une étoile au projet si vous l'appréciez !**
+**N'oubliez pas de donner une étoile au projet si vous l'appréciez !**
 
 [Démo en Ligne](https://presence-app-demo.vercel.app) • [Documentation](./docs) • [Signaler un Bug](https://github.com/Modestekkn/RegistrePresence/issues)
 
-*Développé avec par ModeDevIT de H4-SERVICES*
+*Développé avec soin par ModeDevIT de H4-SERVICES*
 
 </div>

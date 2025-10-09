@@ -368,6 +368,7 @@ location /static {
 
 ### **Équipe de développement**
 - **Lead Developer**: [Modeste KKN](https://github.com/Modestekkn)
+- **Mon Email :** kouakanoumodeste88@gmail.com 
 - **Project Manager**: H4-SERVICES
 - **UI/UX Designer**: Équipe Design
 

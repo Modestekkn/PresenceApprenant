@@ -1,6 +1,6 @@
 # Historique des Versions
 
-## Version 2.0.0 - Production Release (10 octobre 2025)
+## Version 3.0.0 - Production Release (10 octobre 2025)
 
 ### Déploiement en Production
 - ✅ Application déployée sur Vercel : https://presence-apprenant.vercel.app/

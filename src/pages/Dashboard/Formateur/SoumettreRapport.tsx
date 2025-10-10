@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Upload, Calendar, CheckCircle } from 'lucide-react';
+import { Send, Upload, Calendar, CheckCircle, Users } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { sessionStorage, rapportStorage } from '@/utils/storageUtils';
+import { sessionStorage, rapportStorage, presenceStorage, presenceFormateurStorage, sessionApprenantStorage } from '@/utils/storageUtils';
 import type { Session, Rapport } from '@/config/db';
 import { Button } from '@/components/UI/Button';
 import { Loader } from '@/components/UI/Loader';
 import { useToast } from '@/components/UI/useToast';
+
+interface PresenceSummary {
+  totalApprenants: number;
+  presents: number;
+  absents: number;
+  formateurPresent: boolean;
+  apprenantsList: Array<{
+    nom: string;
+    prenom: string;
+    present: boolean;
+    heure?: string;
+  }>;
+}
 
 export const SoumettreRapport: React.FC = () => {
   const { user } = useAuth();
@@ -13,6 +26,7 @@ export const SoumettreRapport: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [existingRapport, setExistingRapport] = useState<Rapport | null>(null);
+  const [presenceSummary, setPresenceSummary] = useState<PresenceSummary | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [reportType, setReportType] = useState<'texte' | 'fichier'>('texte');
@@ -47,12 +61,13 @@ export const SoumettreRapport: React.FC = () => {
     loadCompletedSessions();
   }, [user]);
 
-  // Charger le rapport existant pour la session sélectionnée
+  // Charger le rapport existant et les présences pour la session sélectionnée
   useEffect(() => {
-    const loadExistingReport = async () => {
-      if (!selectedSession) return;
+    const loadSessionData = async () => {
+      if (!selectedSession || !user) return;
 
       try {
+        // Charger le rapport existant
         const rapport = await rapportStorage.getBySession(selectedSession.id_session!);
         setExistingRapport(rapport || null);
         
@@ -63,13 +78,37 @@ export const SoumettreRapport: React.FC = () => {
           setReportContent('');
           setSelectedFile(null);
         }
+
+        // Charger les données de présence
+        const apprenants = await sessionApprenantStorage.getApprenantsBySession(selectedSession.id_session!);
+        const presences = await presenceStorage.getBySession(selectedSession.id_session!);
+        const formateurPresence = await presenceFormateurStorage.getBySession(selectedSession.id_session!);
+
+        // Créer le résumé des présences
+        const apprenantsList = apprenants.map(apprenant => {
+          const presence = presences.find(p => p.id_apprenant === apprenant.id_apprenant);
+          return {
+            nom: apprenant.nom,
+            prenom: apprenant.prenom,
+            present: presence?.present || false,
+            heure: presence?.heure_enregistrement
+          };
+        });
+
+        setPresenceSummary({
+          totalApprenants: apprenants.length,
+          presents: apprenantsList.filter(a => a.present).length,
+          absents: apprenantsList.filter(a => !a.present).length,
+          formateurPresent: formateurPresence?.present || false,
+          apprenantsList
+        });
       } catch (error) {
-        console.error('Erreur lors du chargement du rapport:', error);
+        console.error('Erreur lors du chargement des données:', error);
       }
     };
 
-    loadExistingReport();
-  }, [selectedSession]);
+    loadSessionData();
+  }, [selectedSession, user]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -92,7 +131,7 @@ export const SoumettreRapport: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!selectedSession || !user) return;
+    if (!selectedSession || !user || !presenceSummary) return;
 
     if (reportType === 'texte' && reportContent.trim() === '') {
       showError('Contenu manquant', 'Veuillez saisir le contenu du rapport');
@@ -109,36 +148,65 @@ export const SoumettreRapport: React.FC = () => {
       let contenu = reportContent;
       
       if (reportType === 'fichier' && selectedFile) {
-        // Dans une vraie application, on uploadrait le fichier vers un serveur
-        // Ici, on simule en stockant le nom du fichier
         contenu = `Fichier: ${selectedFile.name}`;
       }
+
+      // Générer le rapport complet avec les données de présence
+      const presenceDetails = `
+═══════════════════════════════════════════════════════════════
+                    DONNÉES DE PRÉSENCE
+═══════════════════════════════════════════════════════════════
+
+Session: ${selectedSession.id_formation}
+Date: ${new Date(selectedSession.date_session).toLocaleDateString('fr-FR')}
+Horaires: ${selectedSession.heure_debut} - ${selectedSession.heure_fin}
+
+FORMATEUR
+─────────────────────────────────────────────────────────────
+${user.prenom} ${user.nom}
+Statut: ${presenceSummary.formateurPresent ? '✓ Présent' : '✗ Absent'}
+
+APPRENANTS (${presenceSummary.totalApprenants})
+─────────────────────────────────────────────────────────────
+Présents: ${presenceSummary.presents}
+Absents: ${presenceSummary.absents}
+
+LISTE DES APPRENANTS:
+${presenceSummary.apprenantsList.map((a, i) => 
+  `${i + 1}. ${a.prenom} ${a.nom} - ${a.present ? '✓ Présent' : '✗ Absent'}${a.heure ? ` (${a.heure})` : ''}`
+).join('\n')}
+
+═══════════════════════════════════════════════════════════════
+                    RAPPORT DU FORMATEUR
+═══════════════════════════════════════════════════════════════
+
+${contenu}
+
+═══════════════════════════════════════════════════════════════
+`;
 
       const rapportData = {
         id_session: selectedSession.id_session!,
         id_formateur: user.id,
         type_rapport: reportType,
-        contenu,
+        contenu: presenceDetails,
         date_soumission: new Date().toISOString(),
         statut: 'Soumis' as const,
       };
 
       if (existingRapport) {
-        // Mise à jour du rapport existant
         await rapportStorage.update(existingRapport.id_rapport!, rapportData);
       } else {
-        // Création d'un nouveau rapport
         await rapportStorage.create(rapportData);
       }
 
-      // Recharger le rapport
       const updatedRapport = await rapportStorage.getBySession(selectedSession.id_session!);
       setExistingRapport(updatedRapport || null);
       
-      showSuccess('Rapport soumis avec succès !', 'Votre rapport a été enregistré et sera traité.');
+      showSuccess('Rapport soumis avec succès !', 'Votre rapport incluant les données de présence a été enregistré.');
     } catch (error) {
       console.error('Erreur lors de la soumission du rapport:', error);
-      showError('Erreur de soumission', 'Une erreur est survenue lors de la soumission du rapport. Veuillez réessayer.');
+      showError('Erreur de soumission', 'Une erreur est survenue lors de la soumission du rapport.');
     } finally {
       setIsSubmitting(false);
     }
@@ -206,10 +274,85 @@ export const SoumettreRapport: React.FC = () => {
       </div>
 
       {selectedSession && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Rapport pour: {selectedSession.id_formation}
-          </h2>
+        <>
+          {/* Résumé des présences */}
+          {presenceSummary && (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <Users className="w-5 h-5 mr-2 text-primary-600" />
+                Résumé des présences
+              </h2>
+              
+              {/* Statistiques */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div className="bg-primary-50 rounded-lg p-4">
+                  <p className="text-sm text-primary-600 font-medium">Total apprenants</p>
+                  <p className="text-2xl font-bold text-primary-900">{presenceSummary.totalApprenants}</p>
+                </div>
+                <div className="bg-success-50 rounded-lg p-4">
+                  <p className="text-sm text-success-600 font-medium">Présents</p>
+                  <p className="text-2xl font-bold text-success-900">{presenceSummary.presents}</p>
+                </div>
+                <div className="bg-danger-50 rounded-lg p-4">
+                  <p className="text-sm text-danger-600 font-medium">Absents</p>
+                  <p className="text-2xl font-bold text-danger-900">{presenceSummary.absents}</p>
+                </div>
+              </div>
+
+              {/* Présence du formateur */}
+              <div className={`mb-4 p-4 rounded-lg ${presenceSummary.formateurPresent ? 'bg-success-50 border border-success-200' : 'bg-warning-50 border border-warning-200'}`}>
+                <p className="font-medium flex items-center">
+                  <CheckCircle className={`w-5 h-5 mr-2 ${presenceSummary.formateurPresent ? 'text-success-600' : 'text-warning-600'}`} />
+                  Formateur: {presenceSummary.formateurPresent ? 'Présent' : 'Absent'}
+                </p>
+              </div>
+
+              {/* Liste des apprenants */}
+              <div className="space-y-2">
+                <h3 className="font-medium text-gray-700 mb-3">Liste des apprenants:</h3>
+                <div className="max-h-60 overflow-y-auto space-y-2">
+                  {presenceSummary.apprenantsList.map((apprenant, index) => (
+                    <div
+                      key={index}
+                      className={`flex items-center justify-between p-3 rounded-lg ${
+                        apprenant.present ? 'bg-success-50' : 'bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex items-center">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
+                          apprenant.present ? 'bg-success-100' : 'bg-gray-200'
+                        }`}>
+                          <span className="text-sm font-medium">
+                            {apprenant.prenom.charAt(0)}{apprenant.nom.charAt(0)}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {apprenant.prenom} {apprenant.nom}
+                          </p>
+                          {apprenant.heure && (
+                            <p className="text-xs text-gray-500">Enregistré à {apprenant.heure}</p>
+                          )}
+                        </div>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        apprenant.present 
+                          ? 'bg-success-100 text-success-800' 
+                          : 'bg-gray-200 text-gray-700'
+                      }`}>
+                        {apprenant.present ? 'Présent' : 'Absent'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Rapport pour: {selectedSession.id_formation}
+            </h2>
 
           {/* Type de rapport */}
           <div className="mb-6">
@@ -326,6 +469,7 @@ export const SoumettreRapport: React.FC = () => {
             </Button>
           </div>
         </div>
+        </>
       )}
     </div>
   );

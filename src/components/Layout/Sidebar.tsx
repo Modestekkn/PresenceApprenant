@@ -136,7 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole }) => {
             <div className="text-xs text-gray-500 text-center">
               <p>Présence App</p>
               <p>Application PWA de gestion de la présence des apprenants</p>
-              <p>v2.0.0</p>
+              <p>v3.0.0</p>
             </div>
           </div>
         </div>

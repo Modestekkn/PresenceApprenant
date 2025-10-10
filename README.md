@@ -825,7 +825,7 @@ Les contributions sont les bienvenues !
 
 Pour toute question ou problème :
 
-- **Email** : modestekkn@gmail.com
+- **Email** : kouakanoumodeste88@gmail.com
 - **GitHub Issues** : [https://github.com/Modestekkn/PresenceApprenant/issues](https://github.com/Modestekkn/PresenceApprenant/issues)
 
 ---
@@ -840,7 +840,7 @@ Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 **Modeste KKN**
 - GitHub: [@Modestekkn](https://github.com/Modestekkn)
-- Email: modestekkn@gmail.com
+- Email: kouakanoumodeste88@gmail.com
 
 ---
 

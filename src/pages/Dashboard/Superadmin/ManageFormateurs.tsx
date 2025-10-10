@@ -231,8 +231,8 @@ export const ManageFormateurs: React.FC = () => {
             sortable: true,
             accessor: (f: Formateur) => (
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-primary-100 dark:bg-primary-600/20 rounded-full flex items-center justify-center mr-3">
-                  <span className="text-primary-600 dark:text-primary-300 font-medium text-sm">
+                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-primary-600 font-medium text-sm">
                     {f.prenom.charAt(0)}{f.nom.charAt(0)}
                   </span>
                 </div>

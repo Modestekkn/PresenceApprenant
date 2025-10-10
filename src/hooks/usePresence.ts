@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { presenceStorage, presenceFormateurStorage, sessionStorage } from '../utils/storageUtils';
 import type { PresenceFormateur, Session } from '../config/db';
+import { getAppSettings } from '../config/constants';
 
 interface PresenceWithDetails {
   id_presence?: number;
@@ -38,6 +39,7 @@ export const usePresence = (sessionId?: number): UsePresenceReturn => {
   const checkPresenceTimeLimit = useCallback((sessionData?: Session) => {
     if (!sessionData) return false;
 
+    const settings = getAppSettings();
     const now = new Date();
     const currentTime = now.toTimeString().slice(0, 5); // HH:mm
     const currentDate = now.toISOString().split('T')[0]; // YYYY-MM-DD
@@ -47,8 +49,8 @@ export const usePresence = (sessionId?: number): UsePresenceReturn => {
       return false;
     }
 
-    // Vérifier qu'on est dans la plage 07:30-08:00
-    return currentTime >= '07:30' && currentTime <= '08:00';
+    // Vérifier qu'on est dans la plage configurée
+    return currentTime >= settings.presenceStartTime && currentTime <= settings.presenceEndTime;
   }, []);
 
   // Charger les présences pour une session
@@ -88,7 +90,8 @@ export const usePresence = (sessionId?: number): UsePresenceReturn => {
     }
 
     if (!canMarkPresence) {
-      setError('La période de prise de présence est expirée (07:30-08:00)');
+      const settings = getAppSettings();
+      setError(`La période de prise de présence est expirée (${settings.presenceStartTime}-${settings.presenceEndTime})`);
       return false;
     }
 
@@ -114,7 +117,8 @@ export const usePresence = (sessionId?: number): UsePresenceReturn => {
     }
 
     if (!canMarkPresence) {
-      setError('La période de prise de présence est expirée (07:30-08:00)');
+      const settings = getAppSettings();
+      setError(`La période de prise de présence est expirée (${settings.presenceStartTime}-${settings.presenceEndTime})`);
       return false;
     }
 

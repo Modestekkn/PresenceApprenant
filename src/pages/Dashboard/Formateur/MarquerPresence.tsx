@@ -6,6 +6,7 @@ import { sessionStorage, sessionApprenantStorage } from '@/utils/storageUtils';
 import type { Session, Apprenant } from '@/config/db';
 import { Button } from '@/components/UI/Button';
 import { Loader } from '@/components/UI/Loader';
+import { getAppSettings } from '@/config/constants';
 
 export const MarquerPresence: React.FC = () => {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ export const MarquerPresence: React.FC = () => {
   const [apprenants, setApprenants] = useState<Apprenant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const settings = getAppSettings();
 
   const {
     presences,
@@ -97,7 +99,7 @@ export const MarquerPresence: React.FC = () => {
     const currentMinute = currentTime.getMinutes();
     const currentTimeString = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
     
-    return currentTimeString >= '07:30' && currentTimeString <= '08:00';
+    return currentTimeString >= settings.presenceStartTime && currentTimeString <= settings.presenceEndTime;
   };
 
   const getPresenceStatus = (apprenantId: number) => {
@@ -130,7 +132,7 @@ export const MarquerPresence: React.FC = () => {
         <h1 className="text-3xl font-bold text-gray-900">Marquer les Présences</h1>
         <p className="text-gray-600 mt-2">
           Heure actuelle: {currentTime.toLocaleTimeString('fr-FR')} - 
-          Période de présence: 07:30 - 08:00
+          Période de présence: {settings.presenceStartTime} - {settings.presenceEndTime}
         </p>
       </div>
 
@@ -155,7 +157,7 @@ export const MarquerPresence: React.FC = () => {
               <div>
                 <p className="text-warning-800 font-medium">Période de présence fermée</p>
                 <p className="text-warning-700 text-sm">
-                  La prise de présence est autorisée uniquement entre 07:30 et 08:00
+                  La prise de présence est autorisée uniquement entre {settings.presenceStartTime} et {settings.presenceEndTime}
                 </p>
               </div>
             </>

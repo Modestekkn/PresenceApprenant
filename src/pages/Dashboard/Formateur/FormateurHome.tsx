@@ -134,6 +134,7 @@ export const FormateurHome: React.FC = () => {
 
       {/* Actions rapides */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
         <ActionCard
           title="Marquer les présences"
           description="Marquez votre présence et celle de vos apprenants"

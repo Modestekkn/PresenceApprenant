@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Clock, CheckCircle, Calendar, FileText } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { sessionStorage, rapportStorage, sessionApprenantStorage } from '@/utils/storageUtils';
 import type { Session } from '@/config/db';
 import { Loader } from '@/components/UI/Loader';
-import { APP_CONSTANTS } from '@/config/constants';
+import { getAppSettings } from '@/config/constants';
 
 export const FormateurHome: React.FC = () => {
   const { user } = useAuth();
@@ -82,8 +83,10 @@ export const FormateurHome: React.FC = () => {
       const now = new Date();
       const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
       
-      const isActive = currentTime >= APP_CONSTANTS.PRESENCE_TIME_LIMITS.START_TIME && 
-                      currentTime <= APP_CONSTANTS.PRESENCE_TIME_LIMITS.END_TIME;
+      const { presenceStartTime, presenceEndTime } = getAppSettings();
+      
+      const isActive = currentTime >= presenceStartTime && 
+                      currentTime <= presenceEndTime;
       
       setIsPresenceTimeActive(isActive);
     };
@@ -113,7 +116,7 @@ export const FormateurHome: React.FC = () => {
             <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
             <div>
               <p className="text-green-800 font-medium">Période de prise de présence active</p>
-              <p className="text-green-700 text-sm">Vous pouvez marquer les présences entre {APP_CONSTANTS.PRESENCE_TIME_LIMITS.START_TIME} et {APP_CONSTANTS.PRESENCE_TIME_LIMITS.END_TIME}</p>
+              <p className="text-green-700 text-sm">Vous pouvez marquer les présences entre {getAppSettings().presenceStartTime} et {getAppSettings().presenceEndTime}</p>
             </div>
           </div>
         </div>
@@ -123,7 +126,7 @@ export const FormateurHome: React.FC = () => {
             <Clock className="w-5 h-5 text-orange-600 mr-2" />
             <div>
               <p className="text-orange-800 font-medium">Hors période de prise de présence</p>
-              <p className="text-orange-700 text-sm">La prise de présence est disponible entre {APP_CONSTANTS.PRESENCE_TIME_LIMITS.START_TIME} et {APP_CONSTANTS.PRESENCE_TIME_LIMITS.END_TIME}</p>
+              <p className="text-orange-700 text-sm">La prise de présence est disponible entre {getAppSettings().presenceStartTime} et {getAppSettings().presenceEndTime}</p>
             </div>
           </div>
         </div>
@@ -211,8 +214,8 @@ const ActionCard: React.FC<ActionCardProps> = ({ title, description, icon, color
   };
 
   return (
-    <a
-      href={link}
+    <Link
+      to={link}
       className="block bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
     >
       <div className="flex items-start space-x-4">
@@ -224,7 +227,7 @@ const ActionCard: React.FC<ActionCardProps> = ({ title, description, icon, color
           <p className="text-gray-600 mt-1">{description}</p>
         </div>
       </div>
-    </a>
+    </Link>
   );
 };
 

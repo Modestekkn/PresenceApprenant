@@ -3,6 +3,7 @@ import { Users, GraduationCap, BookOpen, Calendar } from 'lucide-react';
 import { formateurStorage, apprenantStorage, formationStorage, sessionStorage, rapportStorage } from '@/utils/storageUtils';
 import type { Session, Rapport } from '@/config/db';
 import { Loader } from '@/components/UI/Loader';
+import { PresenceTimeSettings } from './PresenceTimeSettings';
 
 export const SuperadminHome: React.FC = () => {
   const [stats, setStats] = useState({
@@ -85,6 +86,11 @@ export const SuperadminHome: React.FC = () => {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Tableau de bord Superadmin</h1>
         <p className="text-gray-600 mt-2">Vue d'ensemble du système de présence</p>
+      </div>
+
+      {/* Actions rapides */}
+      <div className="flex justify-end">
+        <PresenceTimeSettings />
       </div>
 
       {/* Cartes de statistiques */}

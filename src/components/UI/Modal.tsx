@@ -8,6 +8,7 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  footer?: React.ReactNode; // Ajout de la prop footer
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showCloseButton?: boolean;
 }
@@ -17,6 +18,7 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   title,
   children,
+  footer, // Ajout de la prop footer
   size = 'md',
   showCloseButton = true,
 }) => {
@@ -108,6 +110,13 @@ export const Modal: React.FC<ModalProps> = ({
         <div className="px-6 py-6 max-h-[70vh] overflow-y-auto">
           {children}
         </div>
+
+        {/* Footer */}
+        {footer && (
+          <div className="flex justify-end items-center p-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );

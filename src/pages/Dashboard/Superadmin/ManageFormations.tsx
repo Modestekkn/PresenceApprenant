@@ -113,8 +113,7 @@ export const ManageFormations: React.FC = () => {
     showConfirmation({
       title: 'Confirmer la suppression',
       message: `Êtes-vous sûr de vouloir supprimer la formation "${formation.nom_formation}" ?
-
-Cette action supprimera également toutes les sessions associées à cette formation.`,
+      Cette action supprimera également toutes les sessions associées à cette formation.`,
       type: 'danger',
       confirmText: 'Supprimer',
       cancelText: 'Annuler',

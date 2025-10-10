@@ -15,7 +15,7 @@ export const OfflineBanner: React.FC = () => {
   }, []);
   if (!offline) return null;
   return (
-    <div className="w-full bg-amber-500 text-white text-sm py-2 px-4 flex items-center justify-center gap-2 shadow-md z-50">
+    <div className="w-full bg-green-500 text-white text-sm pt-16 px-4 flex items-center justify-center gap-2 shadow-md z-50">
       <WifiOff className="w-4 h-4" />
       <span>Mode hors-ligne : vos actions seront synchronisées à la reconnexion</span>
     </div>

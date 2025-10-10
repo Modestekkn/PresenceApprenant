@@ -109,6 +109,49 @@ export const APP_CONSTANTS = {
   },
 } as const;
 
+// --- Fonctions pour gérer les paramètres dynamiques ---
+
+const SETTINGS_STORAGE_KEY = 'app_settings';
+
+interface AppSettings {
+  presenceStartTime: string;
+  presenceEndTime: string;
+}
+
+// Fonction pour récupérer les paramètres
+export const getAppSettings = (): AppSettings => {
+  const defaults = {
+    presenceStartTime: APP_CONSTANTS.PRESENCE_TIME_LIMITS.START_TIME,
+    presenceEndTime: APP_CONSTANTS.PRESENCE_TIME_LIMITS.END_TIME,
+  };
+
+  try {
+    const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
+    if (storedSettings) {
+      return { ...defaults, ...JSON.parse(storedSettings) };
+    }
+  } catch (error) {
+    console.error("Erreur lors de la lecture des paramètres :", error);
+  }
+  return defaults;
+};
+
+// Fonction pour sauvegarder les paramètres
+export const saveAppSettings = (settings: Partial<AppSettings>) => {
+  try {
+    const currentSettings = getAppSettings();
+    const newSettings = { ...currentSettings, ...settings };
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings));
+    // Recharger la configuration pour que l'application l'utilise immédiatement
+    Object.assign(APP_CONSTANTS.PRESENCE_TIME_LIMITS, { 
+        START_TIME: newSettings.presenceStartTime, 
+        END_TIME: newSettings.presenceEndTime 
+    });
+  } catch (error) {
+    console.error("Erreur lors de la sauvegarde des paramètres :", error);
+  }
+};
+
 // Types dérivés des constantes
 export type SessionStatus = typeof APP_CONSTANTS.SESSION_STATUS[keyof typeof APP_CONSTANTS.SESSION_STATUS];
 export type RapportType = typeof APP_CONSTANTS.RAPPORT_TYPES[keyof typeof APP_CONSTANTS.RAPPORT_TYPES];

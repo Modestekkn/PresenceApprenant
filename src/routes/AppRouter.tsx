@@ -6,7 +6,10 @@ import { Login } from '../pages/Login';
 
 // Import des dashboards
 import { DashboardSuperadmin } from '../pages/Dashboard/Superadmin/DashboardSuperadmin';
-import { DashboardFormateur } from '../pages/Dashboard/Formateur/DashboardFormateur';
+import { Layout } from '@/components/Layout/Layout';
+import { FormateurHome } from '../pages/Dashboard/Formateur/FormateurHome';
+import { MarquerPresence } from '../pages/Dashboard/Formateur/MarquerPresence';
+import { SoumettreRapport } from '../pages/Dashboard/Formateur/SoumettreRapport';
 
 export const AppRouter: React.FC = () => {
   return (
@@ -26,10 +29,32 @@ export const AppRouter: React.FC = () => {
 
       {/* Routes protégées - Dashboard Formateur */}
       <Route 
-        path="/dashboard/formateur/*" 
+        path="/dashboard/formateur" 
         element={
           <PrivateRoute roles={['formateur']}>
-            <DashboardFormateur />
+            <Layout userRole="formateur">
+              <FormateurHome />
+            </Layout>
+          </PrivateRoute>
+        } 
+      />
+      <Route 
+        path="/dashboard/formateur/presence" 
+        element={
+          <PrivateRoute roles={['formateur']}>
+            <Layout userRole="formateur">
+              <MarquerPresence />
+            </Layout>
+          </PrivateRoute>
+        } 
+      />
+      <Route 
+        path="/dashboard/formateur/rapport" 
+        element={
+          <PrivateRoute roles={['formateur']}>
+            <Layout userRole="formateur">
+              <SoumettreRapport />
+            </Layout>
           </PrivateRoute>
         } 
       />

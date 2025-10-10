@@ -100,6 +100,7 @@ export class AttendanceDatabase extends Dexie {
   constructor() {
     super('AttendanceDatabase');
     
+    // Version 1 - Schéma initial (gardé pour la compatibilité)
     this.version(1).stores({
       superadmins: '++id_superadmin, email',
       formateurs: '++id_formateur, email, numero_telephone',
@@ -109,6 +110,19 @@ export class AttendanceDatabase extends Dexie {
       session_apprenants: '++id_session_apprenant, id_session, id_apprenant',
       presences: '++id_presence, id_session, id_apprenant',
       presences_formateur: '++id_presence_formateur, id_session, id_formateur',
+      rapports: '++id_rapport, id_session, id_formateur, date_soumission'
+    });
+
+    // Version 2 - Ajout des index composés pour les requêtes
+    this.version(2).stores({
+      superadmins: '++id_superadmin, email',
+      formateurs: '++id_formateur, email, numero_telephone',
+      apprenants: '++id_apprenant, nom, prenom',
+      formations: '++id_formation, nom_formation, id_formateur',
+      sessions: '++id_session, date_session, id_formation, id_formateur, statut',
+      session_apprenants: '++id_session_apprenant, id_session, id_apprenant, [id_session+id_apprenant]',
+      presences: '++id_presence, id_session, id_apprenant, [id_session+id_apprenant]',
+      presences_formateur: '++id_presence_formateur, id_session, id_formateur, [id_session+id_formateur]',
       rapports: '++id_rapport, id_session, id_formateur, date_soumission'
     });
 

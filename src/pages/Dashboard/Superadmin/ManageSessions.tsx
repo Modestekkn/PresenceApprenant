@@ -31,6 +31,31 @@ export const ManageSessions: React.FC = () => {
     statut: 'planifiée' as 'planifiée' | 'en cours' | 'terminée',
   });
 
+  // Handlers mémorisés pour éviter la perte de focus
+  const handleFormationChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, id_formation: Number(e.target.value) }));
+  }, []);
+
+  const handleFormateurChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, id_formateur: Number(e.target.value) }));
+  }, []);
+
+  const handleDateChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, date_session: e.target.value }));
+  }, []);
+
+  const handleHeureDebutChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, heure_debut: e.target.value }));
+  }, []);
+
+  const handleHeureFinChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, heure_fin: e.target.value }));
+  }, []);
+
+  const handleStatutChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, statut: e.target.value as 'planifiée' | 'en cours' | 'terminée' }));
+  }, []);
+
   const loadData = useCallback(async () => {
     try {
       const [sessionsData, apprenantsData, formateursData, formationsData] = await Promise.all([
@@ -350,7 +375,7 @@ export const ManageSessions: React.FC = () => {
             <select
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={formData.id_formation}
-              onChange={(e) => setFormData({ ...formData, id_formation: Number(e.target.value) })}
+              onChange={handleFormationChange}
             >
               <option value={0}>Sélectionner une formation</option>
               {formations.map((formation) => (
@@ -369,7 +394,7 @@ export const ManageSessions: React.FC = () => {
             <select
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={formData.id_formateur}
-              onChange={(e) => setFormData({ ...formData, id_formateur: Number(e.target.value) })}
+              onChange={handleFormateurChange}
             >
               <option value={0}>Sélectionner un formateur</option>
               {formateurs.map((formateur) => (
@@ -386,7 +411,7 @@ export const ManageSessions: React.FC = () => {
             type="date"
             required
             value={formData.date_session}
-            onChange={(e) => setFormData({ ...formData, date_session: e.target.value })}
+            onChange={handleDateChange}
           />
 
           {/* Horaires */}
@@ -396,14 +421,14 @@ export const ManageSessions: React.FC = () => {
               type="time"
               required
               value={formData.heure_debut}
-              onChange={(e) => setFormData({ ...formData, heure_debut: e.target.value })}
+              onChange={handleHeureDebutChange}
             />
             <Input
               label="Heure de fin"
               type="time"
               required
               value={formData.heure_fin}
-              onChange={(e) => setFormData({ ...formData, heure_fin: e.target.value })}
+              onChange={handleHeureFinChange}
             />
           </div>
 
@@ -415,7 +440,7 @@ export const ManageSessions: React.FC = () => {
             <select
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={formData.statut}
-              onChange={(e) => setFormData({ ...formData, statut: e.target.value as 'planifiée' | 'en cours' | 'terminée' })}
+              onChange={handleStatutChange}
             >
               <option value="planifiée">Planifiée</option>
               <option value="en cours">En cours</option>

@@ -28,6 +28,23 @@ export const ManageApprenants: React.FC = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Handlers mémorisés pour éviter la perte de focus
+  const handleNomChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, nom: e.target.value }));
+  }, []);
+
+  const handlePrenomChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, prenom: e.target.value }));
+  }, []);
+
+  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, email: e.target.value }));
+  }, []);
+
+  const handleTelephoneChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, numero_telephone: e.target.value }));
+  }, []);
+
   // Charger les apprenants
   const loadApprenants = useCallback(async () => {
     setIsLoading(true);
@@ -358,7 +375,7 @@ export const ManageApprenants: React.FC = () => {
           <Input
             label="Nom"
             value={formData.nom}
-            onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+            onChange={handleNomChange}
             error={errors.nom}
             required
             requiredIndicator
@@ -367,7 +384,7 @@ export const ManageApprenants: React.FC = () => {
           <Input
             label="Prénom"
             value={formData.prenom}
-            onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
+            onChange={handlePrenomChange}
             error={errors.prenom}
             required
             requiredIndicator
@@ -377,7 +394,7 @@ export const ManageApprenants: React.FC = () => {
             label="Email"
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={handleEmailChange}
             error={errors.email}
             helperText="Optionnel - utilisé pour les notifications"
           />
@@ -385,7 +402,7 @@ export const ManageApprenants: React.FC = () => {
           <Input
             label="Numéro de téléphone"
             value={formData.numero_telephone}
-            onChange={(e) => setFormData({ ...formData, numero_telephone: e.target.value })}
+            onChange={handleTelephoneChange}
             error={errors.numero_telephone}
             helperText="Optionnel - format: +2290153456789 ou 0123456789"
           />

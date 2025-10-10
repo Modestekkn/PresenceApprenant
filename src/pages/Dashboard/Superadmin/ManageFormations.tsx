@@ -28,6 +28,19 @@ export const ManageFormations: React.FC = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Handlers mémorisés pour éviter la perte de focus
+  const handleNomFormationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, nom_formation: e.target.value }));
+  }, []);
+
+  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, description: e.target.value }));
+  }, []);
+
+  const handleFormateurChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({ ...prev, id_formateur: parseInt(e.target.value) }));
+  }, []);
+
   // Charger les formations et formateurs
   const loadData = useCallback(async () => {
     setIsLoading(true);
@@ -366,7 +379,7 @@ export const ManageFormations: React.FC = () => {
             <Input
               label="Nom de la formation"
               value={formData.nom_formation}
-              onChange={(e) => setFormData({ ...formData, nom_formation: e.target.value })}
+              onChange={handleNomFormationChange}
               error={errors.nom_formation}
               required
               requiredIndicator
@@ -383,7 +396,7 @@ export const ManageFormations: React.FC = () => {
                 className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
                 rows={3}
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={handleDescriptionChange}
                 placeholder="Décrivez les objectifs et le contenu de la formation..."
               />
               {errors.description && (
@@ -399,7 +412,7 @@ export const ManageFormations: React.FC = () => {
               <select
                 className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 value={formData.id_formateur}
-                onChange={(e) => setFormData({ ...formData, id_formateur: parseInt(e.target.value) })}
+                onChange={handleFormateurChange}
               >
                 <option value={0}>Sélectionner un formateur</option>
                 {formateurs.map((formateur) => (

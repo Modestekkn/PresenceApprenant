@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Edit, Trash2 } from 'lucide-react';
 import type { Formateur } from '@/config/db';
 import { formateurStorage } from '@/utils/storageUtils';
@@ -28,6 +28,27 @@ export const ManageFormateurs: React.FC = () => {
     mot_de_passe: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Handlers mémorisés pour éviter la perte de focus
+  const handlePrenomChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, prenom: e.target.value }));
+  }, []);
+
+  const handleNomChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, nom: e.target.value }));
+  }, []);
+
+  const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, email: e.target.value }));
+  }, []);
+
+  const handleTelephoneChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, numero_telephone: e.target.value }));
+  }, []);
+
+  const handlePasswordChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, mot_de_passe: e.target.value }));
+  }, []);
 
   // Charger les formateurs
   const loadFormateurs = async () => {
@@ -290,14 +311,14 @@ export const ManageFormateurs: React.FC = () => {
             <Input
               label="Prénom"
               value={formData.prenom}
-              onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
+              onChange={handlePrenomChange}
               required
               error={errors.prenom}
             />
             <Input
               label="Nom"
               value={formData.nom}
-              onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+              onChange={handleNomChange}
               required
               error={errors.nom}
             />
@@ -306,7 +327,7 @@ export const ManageFormateurs: React.FC = () => {
             type="email"
             label="Email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={handleEmailChange}
             required
             error={errors.email}
             helperText={!errors.email ? 'Utilisez une adresse valide (ex: nom@domaine.com)' : undefined}
@@ -315,7 +336,7 @@ export const ManageFormateurs: React.FC = () => {
             type="tel"
             label="Numéro de téléphone"
             value={formData.numero_telephone}
-            onChange={(e) => setFormData({ ...formData, numero_telephone: e.target.value })}
+            onChange={handleTelephoneChange}
             required
             error={errors.numero_telephone}
           />
@@ -323,7 +344,7 @@ export const ManageFormateurs: React.FC = () => {
             type="password"
             label={selectedFormateur ? 'Nouveau mot de passe (optionnel)' : 'Mot de passe'}
             value={formData.mot_de_passe}
-            onChange={(e) => setFormData({ ...formData, mot_de_passe: e.target.value })}
+            onChange={handlePasswordChange}
             required={!selectedFormateur}
             error={errors.mot_de_passe}
             helperText={selectedFormateur ? 'Laissez vide pour ne pas changer.' : 'Minimum 6 caractères.'}

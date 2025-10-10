@@ -301,13 +301,22 @@ Système de Gestion de Présence - H4-SERVICES
       header: 'Actions',
       accessor: (row: RapportWithDetails) => (
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => handleViewRapport(row)}>
+          {/* Version desktop */}
+          <Button variant="outline" size="sm" onClick={() => handleViewRapport(row)} className="hidden sm:flex">
             <Eye className="w-4 h-4 mr-2" />
             Consulter
           </Button>
-          <Button variant="secondary" size="sm" onClick={() => exportRapportToPDF(row)}>
+          <Button variant="secondary" size="sm" onClick={() => exportRapportToPDF(row)} className="hidden sm:flex">
             <Download className="w-4 h-4 mr-2" />
             Export
+          </Button>
+          
+          {/* Version mobile - icônes uniquement */}
+          <Button variant="outline" size="icon" onClick={() => handleViewRapport(row)} className="sm:hidden" title="Consulter">
+            <Eye className="w-4 h-4" />
+          </Button>
+          <Button variant="secondary" size="icon" onClick={() => exportRapportToPDF(row)} className="sm:hidden" title="Exporter">
+            <Download className="w-4 h-4" />
           </Button>
         </div>
       ),
@@ -316,10 +325,10 @@ Système de Gestion de Présence - H4-SERVICES
 
   return (
     <div className="space-y-6">
-      <header className="flex items-center justify-between">
+      <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <FileText className="w-6 h-6 mr-3 text-primary-600" />
+          <h1 className="text-2xl sm:text-2xl font-bold text-gray-900 flex items-center">
+            <FileText className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-primary-600" />
             Gestion des Rapports
           </h1>
           <p className="mt-1 text-sm text-gray-600">
@@ -327,9 +336,10 @@ Système de Gestion de Présence - H4-SERVICES
           </p>
         </div>
         {filteredRapports.length > 0 && (
-          <Button variant="primary" onClick={exportAllRapportsToPDF}>
+          <Button variant="primary" onClick={exportAllRapportsToPDF} className="w-full sm:w-auto">
             <FileDown className="w-4 h-4 mr-2" />
-            Exporter tous les rapports
+            <span className="hidden sm:inline">Exporter tous les rapports</span>
+            <span className="sm:hidden">Exporter tout</span>
           </Button>
         )}
       </header>

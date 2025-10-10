@@ -129,10 +129,11 @@ export const MarquerPresence: React.FC = () => {
     <div className="space-y-6">
       {/* En-tête */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Marquer les Présences</h1>
-        <p className="text-gray-600 mt-2">
-          Heure actuelle: {currentTime.toLocaleTimeString('fr-FR')} - 
-          Période de présence: {settings.presenceStartTime} - {settings.presenceEndTime}
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Marquer les Présences</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-2">
+          <span className="block sm:inline">Heure actuelle: {currentTime.toLocaleTimeString('fr-FR')}</span>
+          <span className="hidden sm:inline"> - </span>
+          <span className="block sm:inline">Période: {settings.presenceStartTime} - {settings.presenceEndTime}</span>
         </p>
       </div>
 
@@ -193,11 +194,11 @@ export const MarquerPresence: React.FC = () => {
       {selectedSession && (
         <>
           {/* Présence du formateur */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Ma présence</h2>
-            <div className="flex items-center justify-between">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Ma présence</h2>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-primary-600 font-medium text-sm">
                     {user?.prenom?.charAt(0)}{user?.nom?.charAt(0)}
                   </span>
@@ -208,9 +209,9 @@ export const MarquerPresence: React.FC = () => {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 w-full sm:w-auto">
                 {presenceFormateur ? (
-                  <span className="px-3 py-1 text-sm font-medium rounded-full bg-success-100 text-success-800">
+                  <span className="px-3 py-1 text-sm font-medium rounded-full bg-success-100 text-success-800 whitespace-nowrap">
                     Présent • {presenceFormateur.heure_enregistrement}
                   </span>
                 ) : (
@@ -219,7 +220,9 @@ export const MarquerPresence: React.FC = () => {
                     disabled={!canMarkPresence}
                     variant="success"
                     size="sm"
+                    className="w-full sm:w-auto"
                   >
+                    <CheckCircle className="w-4 h-4 mr-2" />
                     Marquer ma présence
                   </Button>
                 )}
@@ -228,13 +231,13 @@ export const MarquerPresence: React.FC = () => {
           </div>
 
           {/* Liste des apprenants */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
               Présence des apprenants ({apprenants.length})
             </h2>
             
             {error && (
-              <div className="mb-4 p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-700">
+              <div className="mb-4 p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-700 text-sm">
                 {error}
               </div>
             )}
@@ -244,26 +247,26 @@ export const MarquerPresence: React.FC = () => {
                 const presenceStatus = getPresenceStatus(apprenant.id_apprenant!);
                 
                 return (
-                  <div key={apprenant.id_apprenant} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                  <div key={apprenant.id_apprenant} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg gap-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1">
+                      <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
                         <span className="text-gray-600 font-medium text-sm">
                           {apprenant.prenom.charAt(0)}{apprenant.nom.charAt(0)}
                         </span>
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900">
+                      <div className="min-w-0">
+                        <p className="font-medium text-gray-900 truncate">
                           {apprenant.prenom} {apprenant.nom}
                         </p>
                         {apprenant.email && (
-                          <p className="text-sm text-gray-600">{apprenant.email}</p>
+                          <p className="text-sm text-gray-600 truncate hidden sm:block">{apprenant.email}</p>
                         )}
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 flex-shrink-0">
                       {presenceStatus !== null ? (
-                        <span className={`px-3 py-1 text-sm font-medium rounded-full ${
+                        <span className={`px-3 py-1 text-sm font-medium rounded-full whitespace-nowrap ${
                           presenceStatus 
                             ? 'bg-success-100 text-success-800' 
                             : 'bg-danger-100 text-danger-800'
@@ -272,12 +275,13 @@ export const MarquerPresence: React.FC = () => {
                         </span>
                       ) : (
                         <>
+                          {/* Version desktop avec texte */}
                           <Button
                             onClick={() => handleMarkApprenantPresence(apprenant.id_apprenant!, true)}
                             disabled={!canMarkPresence}
                             variant="success"
                             size="sm"
-                            className="flex items-center space-x-1"
+                            className="hidden sm:flex items-center space-x-1"
                           >
                             <CheckCircle className="w-4 h-4" />
                             <span>Présent</span>
@@ -287,10 +291,32 @@ export const MarquerPresence: React.FC = () => {
                             disabled={!canMarkPresence}
                             variant="danger"
                             size="sm"
-                            className="flex items-center space-x-1"
+                            className="hidden sm:flex items-center space-x-1"
                           >
                             <XCircle className="w-4 h-4" />
                             <span>Absent</span>
+                          </Button>
+                          
+                          {/* Version mobile avec icônes uniquement */}
+                          <Button
+                            onClick={() => handleMarkApprenantPresence(apprenant.id_apprenant!, true)}
+                            disabled={!canMarkPresence}
+                            variant="success"
+                            size="icon"
+                            className="sm:hidden"
+                            title="Marquer présent"
+                          >
+                            <CheckCircle className="w-5 h-5" />
+                          </Button>
+                          <Button
+                            onClick={() => handleMarkApprenantPresence(apprenant.id_apprenant!, false)}
+                            disabled={!canMarkPresence}
+                            variant="danger"
+                            size="icon"
+                            className="sm:hidden"
+                            title="Marquer absent"
+                          >
+                            <XCircle className="w-5 h-5" />
                           </Button>
                         </>
                       )}

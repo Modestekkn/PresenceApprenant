@@ -202,18 +202,18 @@ export const ManageFormateurs: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* En-tête */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Gestion des Formateurs</h1>
-          <p className="text-gray-600 mt-2">Gérez les comptes des formateurs</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Gestion des Formateurs</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-2">Gérez les comptes des formateurs</p>
         </div>
-        <Button variant='primary' onClick={handleAdd} className="flex items-center border-gray-100 bg-green-700 hover:bg-green-900 space-x-2">
+        <Button variant='primary' onClick={handleAdd} className="w-full sm:w-auto flex items-center justify-center border-gray-100 bg-green-700 hover:bg-green-900 space-x-2">
           <span>Ajouter</span>
         </Button>
       </div>
 
       {/* Barre de recherche */}
-      <div className="max-w-md">
+      <div className="max-w-full sm:max-w-md">
         <Input
           type="text"
           placeholder="Rechercher un formateur..."

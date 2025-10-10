@@ -192,23 +192,23 @@ export const ManageSessions: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold">Gestion des Sessions</h1>
-        <Button onClick={handleOpenCreateModal}>
+        <Button onClick={handleOpenCreateModal} className="w-full sm:w-auto">
           Créer une session
         </Button>
       </div>
       
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg shadow overflow-x-auto">
         <table className="min-w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Formation</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Formateur</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Horaires</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Formation</th>
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Formateur</th>
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Horaires</th>
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -218,26 +218,26 @@ export const ManageSessions: React.FC = () => {
               
               return (
                 <tr key={session.id_session}>
-                  <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{formation?.nom_formation || 'Formation inconnue'}</div>
+                  <td className="px-3 sm:px-6 py-4">
+                    <div className="font-medium text-gray-900 text-sm">{formation?.nom_formation || 'Formation inconnue'}</div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-6 py-4">
                     <div className="text-sm text-gray-900">
                       {formateur ? `${formateur.prenom} ${formateur.nom}` : 'Non assigné'}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-6 py-4">
                     <div className="text-sm text-gray-900">
                       {new Date(session.date_session).toLocaleDateString('fr-FR')}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-6 py-4 hidden sm:table-cell">
                     <div className="text-sm text-gray-900">
                       {session.heure_debut} - {session.heure_fin}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                  <td className="px-3 sm:px-6 py-4">
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
                       session.statut === 'planifiée' ? 'bg-gray-100 text-gray-800' :
                       session.statut === 'en cours' ? 'bg-green-100 text-green-800' :
                       'bg-blue-100 text-blue-800'
@@ -245,7 +245,7 @@ export const ManageSessions: React.FC = () => {
                       {session.statut}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-3 sm:px-6 py-4">
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"

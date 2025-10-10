@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Users, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Users, Pencil, Trash2 } from 'lucide-react';
 import { sessionStorage, apprenantStorage, sessionApprenantStorage, formateurStorage, formationStorage } from '@/utils/storageUtils';
 import type { Session, Apprenant, Formateur, Formation } from '@/config/db';
 import { Button } from '@/components/UI/Button';
@@ -195,7 +195,6 @@ export const ManageSessions: React.FC = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Gestion des Sessions</h1>
         <Button onClick={handleOpenCreateModal}>
-          <Plus className="w-4 h-4 mr-2" />
           Créer une session
         </Button>
       </div>

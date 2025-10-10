@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Search, Edit, Trash2, Users, Mail, Phone } from 'lucide-react';
+import { Search, Edit, Trash2, Users, Mail, Phone } from 'lucide-react';
 import type { Apprenant } from '@/config/db';
 import { apprenantStorage } from '@/utils/storageUtils';
 import { Button } from '@/components/UI/Button';
@@ -280,7 +280,6 @@ export const ManageApprenants: React.FC = () => {
         <Button 
           onClick={handleAdd}
         >
-          <Plus className="w-4 h-4 mr-2" />
           Ajouter
         </Button>
       </div>

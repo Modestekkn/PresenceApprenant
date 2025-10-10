@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Search, Edit, Trash2, BookOpen, User, Calendar, Clock } from 'lucide-react';
+import { Search, Edit, Trash2, BookOpen, User, Calendar, Clock } from 'lucide-react';
 import type { Formation, Formateur } from '@/config/db';
 import { formationStorage, formateurStorage } from '@/utils/storageUtils';
 import { Button } from '@/components/UI/Button';
@@ -287,7 +287,6 @@ export const ManageFormations: React.FC = () => {
             onClick={handleAdd}
             className="w-full sm:w-auto"
           >
-            <Plus className="w-4 h-4 mr-2" />
             <span className="hidden sm:inline">Ajouter</span>
             <span className="sm:hidden">Ajouter</span>
           </Button>

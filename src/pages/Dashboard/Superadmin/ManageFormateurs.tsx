@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2 } from 'lucide-react';
+import { Search, Edit, Trash2 } from 'lucide-react';
 import type { Formateur } from '@/config/db';
 import { formateurStorage } from '@/utils/storageUtils';
 import { Button } from '@/components/UI/Button';
@@ -208,7 +208,6 @@ export const ManageFormateurs: React.FC = () => {
           <p className="text-gray-600 mt-2">Gérez les comptes des formateurs</p>
         </div>
         <Button variant='primary' onClick={handleAdd} className="flex items-center border-gray-100 bg-green-700 hover:bg-green-900 space-x-2">
-          <Plus className="w-4 h-4" />
           <span>Ajouter</span>
         </Button>
       </div>

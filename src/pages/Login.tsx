@@ -103,7 +103,7 @@ export const Login: React.FC = () => {
             type="submit"
             variant="primary"
             size="lg"
-            className="w-full bg-blue-600"
+            className="w-full bg-green-600"
             isLoading={isLoading}
           >
             Se connecter

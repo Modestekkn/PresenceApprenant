@@ -7,12 +7,18 @@
 [![Vite](https://img.shields.io/badge/Vite-7.1.7-purple.svg)](https://vitejs.dev/)
 [![PWA](https://img.shields.io/badge/PWA-Ready-green.svg)](https://web.dev/progressive-web-apps/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Deployment](https://img.shields.io/badge/Deployment-Vercel-black.svg)](https://presence-apprenant.vercel.app/)
+[![Status](https://img.shields.io/badge/Status-Production-success.svg)](https://presence-apprenant.vercel.app/)
 
 ---
 
 ## Aperçu du projet
 
 **PWA Gestion de Présence** est une application web progressive conçue pour automatiser et optimiser le suivi des présences dans les centres de formation professionnelle. Elle offre une interface intuitive, des contrôles temporels configurables et une gestion complète multi-rôles.
+
+**Application en ligne** : [https://presence-apprenant.vercel.app/](https://presence-apprenant.vercel.app/)
+
+**Dépôt GitHub** : [https://github.com/Modestekkn/PresenceApprenant](https://github.com/Modestekkn/PresenceApprenant)
 
 ### Fonctionnalités principales
 
@@ -273,32 +279,51 @@ VITE_APP_VERSION=2.0.0
 
 ---
 
-## Comptes de test
+## Accès à l'application
 
-L'application initialise automatiquement des comptes de test au premier lancement (via le système de seeding).
+### Application en production
 
-### Superadmin
+**URL de production** : [https://presence-apprenant.vercel.app/](https://presence-apprenant.vercel.app/)
+
+L'application est déployée sur Vercel et accessible 24/7. Elle initialise automatiquement les données de test au premier chargement grâce au système de seeding intelligent.
+
+### Comptes de test
+
+L'application crée automatiquement des comptes de test au premier lancement via un système de seeding robuste avec logs détaillés.
+
+#### Superadmin
 ```
 Email:    admin@presence.app
 Password: admin123
 ```
 
-### Formateur
+#### Formateur
 ```
 Email:    jean.dupont@formation.com
 Password: formateur123
 ```
 
-### Données de test incluses
-- 3 apprenants pré-créés (Alice Martin, Paul Bernard, Sophie Durand)
-- 1 formation "Développement Web Frontend"
-- Sessions d'exemple
+### Système de seeding automatique
 
-**Note**: Pour réinitialiser la base de données, ouvrez la console du navigateur et exécutez :
+Au premier lancement de l'application :
+1. Le système vérifie si la base de données IndexedDB est vide
+2. Si vide, il crée automatiquement :
+   - Un compte superadmin par défaut
+   - Un compte formateur par défaut
+3. Des logs détaillés s'affichent dans la console du navigateur :
+   - 🌱 Démarrage du seeding
+   - ✅ Confirmation de création des comptes
+   - 📊 Statistiques de la base de données
+   - ❌ Erreurs détaillées en cas de problème
+
+**Vérification du seeding** :
+Pour vérifier que le seeding a fonctionné, ouvrez la console du navigateur (F12) et vérifiez les messages de logs.
+
+**Note** : Pour réinitialiser la base de données, ouvrez la console du navigateur (F12) et exécutez :
 ```javascript
-indexedDB.deleteDatabase('AttendanceDatabase')
+indexedDB.deleteDatabase('PresenceDB')
 ```
-Puis rechargez la page.
+Puis rechargez la page (Ctrl + F5).
 
 ---
 
@@ -681,44 +706,117 @@ L'application utilise une bibliothèque de composants UI personnalisés :
 
 ## Déploiement
 
-### Vercel (recommandé)
+### Application en production
+
+**L'application est déjà déployée sur Vercel** :
+- URL de production : [https://presence-apprenant.vercel.app/](https://presence-apprenant.vercel.app/)
+- Déploiement automatique sur chaque push vers `main`
+- HTTPS activé par défaut
+- CDN global pour performances optimales
+
+### Configuration Vercel
+
+Le projet est configuré avec les paramètres suivants :
+
+**Build Settings** :
+```
+Framework Preset:  Vite
+Build Command:     pnpm build
+Output Directory:  dist
+Install Command:   pnpm install
+Node Version:      18.x
+```
+
+**Fichier vercel.json** :
+```json
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+```
+
+Ce fichier garantit que toutes les routes sont redirigées vers `index.html`, permettant à React Router de gérer la navigation dans cette SPA (Single Page Application).
+
+### Déployer votre propre instance
+
+#### Option 1 : Déploiement via Vercel Dashboard
+
+1. **Connectez-vous à Vercel** : [https://vercel.com](https://vercel.com)
+2. **Importez le projet** :
+   - Cliquez sur "Add New..." → "Project"
+   - Sélectionnez votre fork du dépôt GitHub
+3. **Configuration automatique** :
+   - Vercel détecte automatiquement Vite
+   - Vérifiez les paramètres (Build Command: `pnpm build`, Output: `dist`)
+4. **Déployez** :
+   - Cliquez sur "Deploy"
+   - Attendez 2-3 minutes
+5. **URL unique** : Vercel génère une URL comme `votre-projet.vercel.app`
+
+#### Option 2 : Déploiement via CLI
 
 ```bash
 # Installer Vercel CLI
 npm i -g vercel
 
-# Déployer
+# Se connecter à Vercel
+vercel login
+
+# Déployer en preview
 vercel
 
-# Production
+# Déployer en production
 vercel --prod
 ```
 
-**Configuration Vercel** :
-- Build Command: `pnpm build`
-- Output Directory: `dist`
-- Install Command: `pnpm install`
+### Build local
 
-### Build manuel
+Pour tester le build avant déploiement :
 
 ```bash
-# Build
+# Build de production
 pnpm build
 
-# Les fichiers sont dans /dist
-# Déployer le dossier dist sur n'importe quel hébergeur statique
+# Prévisualiser le build localement
+pnpm preview
+# Accessible sur http://localhost:4173
 ```
 
-### Hébergeurs compatibles
+### Autres hébergeurs compatibles
 
-- Vercel (recommandé)
-- Netlify
-- GitHub Pages
-- Firebase Hosting
-- Cloudflare Pages
-- Tout hébergeur supportant SPA
+L'application peut être déployée sur n'importe quel hébergeur de sites statiques :
 
-**Note importante** : L'application utilise IndexedDB, donc toutes les données sont stockées localement dans le navigateur de l'utilisateur. Pas de backend nécessaire.
+**Netlify** :
+```
+Build command: pnpm build
+Publish directory: dist
+```
+
+**GitHub Pages** :
+```bash
+pnpm build
+# Copier le contenu de /dist vers gh-pages branch
+```
+
+**Firebase Hosting** :
+```bash
+pnpm build
+firebase deploy
+```
+
+**Cloudflare Pages** :
+- Build command: `pnpm build`
+- Build output directory: `dist`
+
+**Note importante** : 
+- L'application fonctionne 100% côté client avec IndexedDB
+- Aucun backend n'est nécessaire
+- Toutes les données sont stockées localement dans le navigateur
+- Le système de seeding s'exécute automatiquement au premier chargement
 
 ---
 

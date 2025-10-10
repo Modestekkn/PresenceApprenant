@@ -7,7 +7,7 @@ import { Modal } from '@/components/UI/Modal';
 import { Input } from '@/components/UI/Input';
 import { useToast } from '@/components/UI/useToast';
 
-type ModalType = 'apprenants' | 'create' | 'edit' | null;
+type ModalType = 'apprenants' | 'create' | 'edit' | 'delete' | null;
 
 export const ManageSessions: React.FC = () => {
   const { showSuccess, showError } = useToast();
@@ -19,6 +19,7 @@ export const ManageSessions: React.FC = () => {
   const [modalType, setModalType] = useState<ModalType>(null);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [selectedApprenants, setSelectedApprenants] = useState<number[]>([]);
+  const [sessionToDelete, setSessionToDelete] = useState<Session | null>(null);
   
   // État pour le formulaire de création/modification
   const [formData, setFormData] = useState({
@@ -160,12 +161,19 @@ export const ManageSessions: React.FC = () => {
     }
   };
 
-  const handleDeleteSession = async (sessionId: number) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette session ?')) return;
+  const handleDeleteSession = async (session: Session) => {
+    setSessionToDelete(session);
+    setModalType('delete');
+  };
+
+  const confirmDeleteSession = async () => {
+    if (!sessionToDelete) return;
     
     try {
-      await sessionStorage.delete(sessionId);
+      await sessionStorage.delete(sessionToDelete.id_session!);
       showSuccess('Session supprimée avec succès');
+      setModalType(null);
+      setSessionToDelete(null);
       loadData();
     } catch (error) {
       console.error('Erreur:', error);
@@ -177,6 +185,7 @@ export const ManageSessions: React.FC = () => {
     setModalType(null);
     setSelectedSession(null);
     setSelectedApprenants([]);
+    setSessionToDelete(null);
   };
 
   if (isLoading) return <div>Chargement...</div>;
@@ -258,7 +267,7 @@ export const ManageSessions: React.FC = () => {
                       <Button
                         variant="danger"
                         size="icon"
-                        onClick={() => handleDeleteSession(session.id_session!)}
+                        onClick={() => handleDeleteSession(session)}
                         title="Supprimer"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -440,6 +449,49 @@ export const ManageSessions: React.FC = () => {
               {selectedApprenants.length} apprenant(s) sélectionné(s)
             </p>
           </div>
+        </div>
+      </Modal>
+
+      {/* Modal de confirmation de suppression */}
+      <Modal
+        isOpen={modalType === 'delete'}
+        onClose={closeModal}
+        title="Confirmer la suppression"
+        size="sm"
+        footer={
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={closeModal}>
+              Annuler
+            </Button>
+            <Button variant="danger" onClick={confirmDeleteSession}>
+              Supprimer
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <p className="text-gray-700">
+            Êtes-vous sûr de vouloir supprimer cette session ?
+          </p>
+          {sessionToDelete && (
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <p className="text-sm text-gray-600">
+                <strong>Formation :</strong> {formations.find(f => f.id_formation === sessionToDelete.id_formation)?.nom_formation || 'Inconnue'}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Formateur :</strong> {formateurs.find(f => f.id_formateur === sessionToDelete.id_formateur)?.prenom} {formateurs.find(f => f.id_formateur === sessionToDelete.id_formateur)?.nom || 'Non assigné'}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Date :</strong> {new Date(sessionToDelete.date_session).toLocaleDateString('fr-FR')}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Horaires :</strong> {sessionToDelete.heure_debut} - {sessionToDelete.heure_fin}
+              </p>
+            </div>
+          )}
+          <p className="text-sm text-red-600 font-medium">
+            Cette action est irréversible et supprimera également toutes les présences associées.
+          </p>
         </div>
       </Modal>
     </div>

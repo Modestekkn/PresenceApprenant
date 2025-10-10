@@ -86,7 +86,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
   return (
     <div
       className={`
-        toast-item max-w-sm w-full ${config.bgColor} ${config.borderColor} border rounded-lg shadow-lg pointer-events-auto
+        toast-item max-w-md w-full ${config.bgColor} ${config.borderColor} border rounded-lg shadow-lg pointer-events-auto
         transform transition-all duration-300 ease-in-out toast-enter
         hover:shadow-xl
       `}

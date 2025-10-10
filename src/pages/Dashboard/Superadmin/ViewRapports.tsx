@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, FileText, User, Clock, Calendar, Eye } from 'lucide-react';
+import { Search, FileText, User, Clock, Calendar, Eye, Download, FileDown } from 'lucide-react';
 import { rapportStorage } from '@/utils/storageUtils';
 import { Input } from '@/components/UI/Input';
 import { DataTable, DataTableSkeleton } from '@/components/UI/DataTable';
@@ -120,6 +120,145 @@ export const ViewRapports: React.FC = () => {
     }
   };
 
+  // Fonction pour exporter un rapport en PDF
+  const exportRapportToPDF = (rapport: RapportWithDetails) => {
+    try {
+      // Créer le contenu du PDF
+      const content = `
+═══════════════════════════════════════════════════════════════
+                    RAPPORT DE FORMATION
+═══════════════════════════════════════════════════════════════
+
+INFORMATIONS GÉNÉRALES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Formateur      : ${rapport.formateur_prenom} ${rapport.formateur_nom}
+  Session        : ${rapport.session_nom}
+  Date de soumission : ${new Date(rapport.date_soumission).toLocaleDateString('fr-FR', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })}
+  Statut         : ${rapport.statut}
+  ID Rapport     : #${rapport.id_rapport}
+
+═══════════════════════════════════════════════════════════════
+                    CONTENU DU RAPPORT
+═══════════════════════════════════════════════════════════════
+
+${rapport.contenu}
+
+═══════════════════════════════════════════════════════════════
+
+Document généré le ${new Date().toLocaleDateString('fr-FR', { 
+  weekday: 'long', 
+  year: 'numeric', 
+  month: 'long', 
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+})}
+
+Système de Gestion de Présence - H4-SERVICES
+═══════════════════════════════════════════════════════════════
+`;
+
+      // Créer un blob avec le contenu
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      
+      // Créer un lien de téléchargement
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Rapport_${rapport.formateur_nom}_${rapport.id_rapport}_${new Date(rapport.date_soumission).toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      showToast({
+        title: 'Export réussi',
+        message: 'Le rapport a été exporté avec succès.',
+        type: 'success',
+      });
+    } catch (error) {
+      console.error('Erreur lors de l\'export:', error);
+      showError('Erreur d\'export', 'Impossible d\'exporter le rapport.');
+    }
+  };
+
+  // Fonction pour exporter tous les rapports
+  const exportAllRapportsToPDF = () => {
+    try {
+      let content = `
+═══════════════════════════════════════════════════════════════
+              COMPILATION DES RAPPORTS DE FORMATION
+═══════════════════════════════════════════════════════════════
+
+Date de génération : ${new Date().toLocaleDateString('fr-FR', { 
+  weekday: 'long', 
+  year: 'numeric', 
+  month: 'long', 
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+})}
+
+Nombre total de rapports : ${filteredRapports.length}
+
+`;
+
+      filteredRapports.forEach((rapport, index) => {
+        content += `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RAPPORT ${index + 1} / ${filteredRapports.length}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Formateur      : ${rapport.formateur_prenom} ${rapport.formateur_nom}
+  Session        : ${rapport.session_nom}
+  Date           : ${new Date(rapport.date_soumission).toLocaleDateString('fr-FR')}
+  Statut         : ${rapport.statut}
+  ID             : #${rapport.id_rapport}
+
+CONTENU :
+─────────────────────────────────────────────────────────────
+${rapport.contenu}
+
+`;
+      });
+
+      content += `
+═══════════════════════════════════════════════════════════════
+
+Système de Gestion de Présence - H4-SERVICES
+═══════════════════════════════════════════════════════════════
+`;
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Compilation_Rapports_${new Date().toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      showToast({
+        title: 'Export réussi',
+        message: `${filteredRapports.length} rapport(s) exporté(s) avec succès.`,
+        type: 'success',
+      });
+    } catch (error) {
+      console.error('Erreur lors de l\'export:', error);
+      showError('Erreur d\'export', 'Impossible d\'exporter les rapports.');
+    }
+  };
+
   // Colonnes de la table
   const columns = [
     {
@@ -161,10 +300,16 @@ export const ViewRapports: React.FC = () => {
       key: 'actions',
       header: 'Actions',
       accessor: (row: RapportWithDetails) => (
-        <Button variant="outline" size="sm" onClick={() => handleViewRapport(row)}>
-          <Eye className="w-4 h-4 mr-2" />
-          Consulter
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => handleViewRapport(row)}>
+            <Eye className="w-4 h-4 mr-2" />
+            Consulter
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => exportRapportToPDF(row)}>
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
+        </div>
       ),
     },
   ];
@@ -181,6 +326,12 @@ export const ViewRapports: React.FC = () => {
             Consultez et gérez les rapports soumis par les formateurs.
           </p>
         </div>
+        {filteredRapports.length > 0 && (
+          <Button variant="primary" onClick={exportAllRapportsToPDF}>
+            <FileDown className="w-4 h-4 mr-2" />
+            Exporter tous les rapports
+          </Button>
+        )}
       </header>
 
       <div className="bg-white p-4 rounded-lg shadow-sm">

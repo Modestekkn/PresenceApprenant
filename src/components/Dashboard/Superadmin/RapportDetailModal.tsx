@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from '../../UI/Modal';
 import { Button } from '../../UI/Button';
 import { Badge } from '../../UI/Badge';
-import { X, User, Calendar, Clock, FileText, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { User, Calendar, Clock, FileText, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 
 type RapportWithDetails = {
   id_rapport: number;
@@ -41,18 +41,8 @@ export const RapportDetailModal: React.FC<RapportDetailModalProps> = ({ rapport,
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Détails du Rapport">
-      <div className="p-6">
-        <div className="flex items-start justify-between">
-          <h2 className="text-xl font-bold text-gray-800 flex items-center">
-            <FileText className="w-6 h-6 mr-3 text-primary-600" />
-            Détails du Rapport
-          </h2>
-          <button onClick={onClose} className="p-1 rounded-full hover:bg-gray-200">
-            <X size={20} />
-          </button>
-        </div>
-
-        <div className="mt-4 space-y-4 text-sm">
+      <div className="space-y-4">
+        <div className="space-y-4 text-sm">
             <div className="flex items-center justify-between pb-2 border-b">
                 <span className="font-semibold text-gray-600">Statut</span>
                 {getStatusBadge(rapport.statut)}

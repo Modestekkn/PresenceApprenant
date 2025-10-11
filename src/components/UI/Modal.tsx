@@ -23,38 +23,56 @@ export const Modal: React.FC<ModalProps> = ({
   showCloseButton = true,
 }) => {
   const dialogRef = React.useRef<HTMLDivElement | null>(null);
+  const hasInitialFocusRef = React.useRef(false);
 
   React.useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      hasInitialFocusRef.current = false;
+      return;
+    }
+    
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    // Focus le premier élément focusable
-    const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    if (focusables && focusables.length > 0) {
-      focusables[0].focus();
+    
+    // Focus le premier input seulement lors de l'ouverture initiale
+    if (!hasInitialFocusRef.current) {
+      hasInitialFocusRef.current = true;
+      const firstInput = dialogRef.current?.querySelector<HTMLElement>(
+        'input:not([type="hidden"]), select, textarea'
+      );
+      if (firstInput) {
+        // Petit délai pour laisser le modal s'afficher
+        setTimeout(() => firstInput.focus(), 50);
+      }
     }
 
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation();
         onClose();
-      } else if (e.key === 'Tab' && focusables && focusables.length > 0) {
-        const first = focusables[0];
-        const last = focusables[focusables.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
+      } else if (e.key === 'Tab') {
+        const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusables && focusables.length > 0) {
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
         }
       }
     };
+    
     document.addEventListener('keydown', handleKey, true);
     return () => {
       document.removeEventListener('keydown', handleKey, true);
-      previouslyFocused?.focus();
+      if (!isOpen) {
+        previouslyFocused?.focus();
+      }
     };
   }, [isOpen, onClose]);
 
@@ -100,6 +118,7 @@ export const Modal: React.FC<ModalProps> = ({
               onClick={onClose}
               className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors border-gray-200"
               aria-label="Fermer"
+              tabIndex={-1}
             >
               <X className="w-5 h-5 text-gray-500" />
             </Button>
